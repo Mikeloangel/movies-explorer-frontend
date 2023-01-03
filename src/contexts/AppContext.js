@@ -1,5 +1,4 @@
 import React from "react";
 
-// { isLogged, userMail, currentUser }
-// currentUser {name, avatar, about}
+// { isLogged }
 export const AppContext = React.createContext();
