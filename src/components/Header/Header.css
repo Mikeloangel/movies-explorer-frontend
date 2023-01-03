@@ -1,0 +1,33 @@
+.header{
+  max-width: var(--width-section);
+  margin: 0 auto;
+  padding: var(--padding-section);
+  box-sizing: border-box;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background-color: var(--bg-primary-100, #fff);
+  color: var(--cl-text-primary, #000);
+}
+
+.header_theme_dark{
+  background-color: var(--bg-dark-accent);
+  color: var(--cl-text-secondary);
+}
+
+.header__logo{
+  width: 38px;
+  height: 38px;
+
+  background-image: url(../../images/logo.png);
+  background-repeat: no-repeat;
+  background-position: center;
+
+  transition: var(--transition-hover);
+}
+
+.header__logo:hover{
+  transform: scale(1.05);
+}

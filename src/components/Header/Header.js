@@ -1,11 +1,18 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+
 import Navigation from '../Navigation/Navigation';
 
-export default function Header(){
+import './Header.css';
+
+export default function Header({theme}) {
+
   return (
-    <p>Header
-      <Navigation />
-    </p>
+    <header className={`header ${theme === 'dark' && 'header_theme_dark'}`}>
+      <Link to='/'>
+        <div className="header__logo"></div>
+      </Link>
+      <Navigation theme={theme} />
+    </header>
   )
 }
-//  нажатие на логотип ведёт на страницу «О проекте»;
