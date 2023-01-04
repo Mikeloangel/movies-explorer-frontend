@@ -16,6 +16,10 @@
   /* bg colors */
   --bg-dark-accent: #073042;
   --bg-primary-100: #fff;
+  --bg-primary-200: #f5f5f5;
+  --bg-primary-250: #f2f2f2;
+  --bg-primary-300: #e8e8e8;
+  --bg-primary-400: #a8a8a8;
 
   /* widths */
   --width-section: 1280px;
