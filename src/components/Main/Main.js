@@ -1,16 +1,35 @@
 import React from 'react';
 
-export default function Main(){
+import Promo from '../Promo/Promo';
+import MainSection from '../MainSection/MainSection';
+import AboutProject from '../AboutProject/AboutProject';
+import Techs from '../Techs/Techs';
+import AboutMe from '../AboutMe/AboutMe';
+import Portfolio from '../Portfolio/Portfolio';
+
+import './Main.css';
+
+export default function Main() {
   return (
-    <p>О проекте</p>
+    <main className='main'>
+      <Promo />
+
+      <MainSection title='О проекте' theme=''>
+        <AboutProject />
+      </MainSection>
+
+      <MainSection title='Технологии' theme='gray'>
+        <Techs />
+      </MainSection>
+
+      <MainSection title='Студент' theme='compact'>
+        <AboutMe />
+      </MainSection>
+
+      <MainSection title='Портфолио' theme='slim'>
+        <Portfolio />
+      </MainSection>
+
+    </main>
   )
 }
-
-/**
- * Promo — компонент с вёрсткой баннера страницы «О проекте».
-NavTab — компонент с навигацией по странице «О проекте».
-AboutProject — компонент с описанием дипломного проекта.
-Techs — компонент с использованными технологиями.
-AboutMe — компонент с информацией о студенте.
-Portfolio — компонент со ссылками на другие проекты.
- */

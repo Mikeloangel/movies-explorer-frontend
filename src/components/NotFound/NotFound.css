@@ -62,7 +62,7 @@
   opacity: .7;
 }
 
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 425px) {
   .notfound{
     gap: 40px 0;
   }
@@ -73,10 +73,6 @@
   .notfound__description{
     padding: 10px 0 0 0;
     font-size: 12px;
-  }
-
-  .notfound__links{
-    /* padding-top: 20px; */
   }
 
   .notfound__link{

@@ -331,11 +331,4 @@
   .navigation__type_mobile .navigation__link {
     text-underline-offset: 11px;
   }
-
-  .navigation__account {
-    /* border: 2px solid #aaaaaa; */
-  }
 }
-/* * {
-  outline: 1px dashed coral;
-} */
