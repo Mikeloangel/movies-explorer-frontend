@@ -21,7 +21,7 @@ import NotFound from '../NotFound/NotFound';
 // Использован normalize.сss или стилизован строго по БЭМ — без внешних файлов.
 
 function App() {
-  const [isLogged, setIsLogged] = useState(true);
+  const [isLogged, setIsLogged] = useState(false);
   const [currentUser, setCurrentUser] = useState({email:'mail@yandex.ru',name:'Виталий'});
 
   // hardcode to change logged state
