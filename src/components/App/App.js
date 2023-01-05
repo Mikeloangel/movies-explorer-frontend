@@ -68,6 +68,7 @@ function App() {
             <NotFound />
           </Route>
         </Switch>
+
         <p
           style={{
             cursor: 'pointer',
@@ -78,6 +79,7 @@ function App() {
             left: 0,
             padding: 0,
             margin: 0,
+            outline: '2px dashed coral'
           }}
           onClick={toggleUserState}>
           Click here to change state: is {isLogged ? 'logged' : 'logged out'}
