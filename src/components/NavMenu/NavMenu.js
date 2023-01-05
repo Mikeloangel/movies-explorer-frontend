@@ -18,17 +18,17 @@ export default function NavMenu({ theme }) {
   return (
     <>
       <div
-        className={`burger ${isMenuOpen && 'burger_active'} ${theme === 'dark' && 'burger_theme_dark'} `}
+        className={`burger ${isMenuOpen && 'burger_active'} burger_theme_${theme} `}
         onClick={toggleMenuOpen}>
         <div className="burger-stripe"></div>
       </div>
       <nav className={`navigation navigation__type_mobile ${isMenuOpen && 'navigation_active'}`}>
-        <ul className={`navigation__list ${theme === 'dark' && 'navigation__list_theme_dark'}`}>
+        <ul className={`navigation__list navigation__list_theme_${theme}`}>
           <li className='navigation__item'>
             <NavLink
               to='/'
               exact
-              className={`navigation__link ${theme === 'dark' && 'navigation__link_theme_dark'} navigation__link_type_mobile`}
+              className={`navigation__link navigation__link_theme_${theme} navigation__link_type_mobile`}
               activeClassName='navigation__link_active'
               onClick={handleCloseMenu}>
               Главная
@@ -37,7 +37,7 @@ export default function NavMenu({ theme }) {
           <li className='navigation__item'>
             <NavLink
               to='/movies'
-              className={`navigation__link ${theme === 'dark' && 'navigation__link_theme_dark'}`}
+              className={`navigation__link navigation__link_theme_${theme}`}
               activeClassName='navigation__link_active'
               onClick={handleCloseMenu}>
               Фильмы
@@ -46,7 +46,7 @@ export default function NavMenu({ theme }) {
           <li className='navigation__item'>
             <NavLink
               to='/saved-movies'
-              className={`navigation__link ${theme === 'dark' && 'navigation__link_theme_dark'}`}
+              className={`navigation__link navigation__link_theme_${theme}`}
               activeClassName='navigation__link_active'
               onClick={handleCloseMenu}>
               Сохранённые фильмы
@@ -56,7 +56,7 @@ export default function NavMenu({ theme }) {
 
         <NavLink
           to='/profile'
-          className={`navigation__account ${theme === 'dark' && 'navigation__account_theme_dark'}`}
+          className={`navigation__account navigation__account_theme_${theme}`}
           onClick={handleCloseMenu}>
           <img src={imgAccount} alt='Профиль' className='navigation__account-img' />
           Аккаунт

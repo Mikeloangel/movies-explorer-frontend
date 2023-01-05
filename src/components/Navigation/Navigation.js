@@ -7,12 +7,12 @@ import NavMenu from '../NavMenu/NavMenu';
 
 import './Navigation.css';
 
-export default function Navigation({ theme }) {
+export default function Navigation(props) {
   const { isLogged } = useContext(AppContext);
 
   return (
     isLogged ?
-      <NavMenu theme={theme} /> :
-      <NavJoin theme={theme} />
+      <NavMenu {...props} /> :
+      <NavJoin {...props} />
   )
 }

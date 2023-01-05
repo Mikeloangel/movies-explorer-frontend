@@ -6,18 +6,18 @@ import './NavJoin.css';
 export default function NavJoin({ theme }) {
   return (
     <nav className='navigation'>
-      <ul className={`navigation__list ${theme === 'dark' && 'navigation__list_theme_dark'}`}>
+      <ul className={`navigation__list navigation__list_theme_${theme}`}>
         <li className='navigation__item'>
           <NavLink
             to='/signup'
-            className={`navigation__link ${theme && 'navigation__link_theme_dark'}`}>
+            className={`navigation__link navigation__link_theme_${theme}`}>
             Регистрация
           </NavLink>
         </li>
         <li className='navigation__item'>
           <NavLink
             to='/signin'
-            className={`navigation__button ${theme === 'dark' && 'navigation__button_theme_dark'}`}>
+            className={`navigation__button navigation__button_theme_${theme}`}>
             Войти
           </NavLink>
         </li>
