@@ -68,6 +68,7 @@
   line-height: 1.18;
 
   text-align: right;
+  direction:ltr;
 
   color: var(--cl-text-primary);
 
