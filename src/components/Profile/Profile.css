@@ -8,6 +8,7 @@
 .profile__name {
   padding: 56px 0 105px 0;
   margin: 0 auto;
+  box-sizing: border-box;
   text-align: center;
 
   font-weight: 500;
@@ -32,11 +33,12 @@
   align-items: center;
 
   padding: 8px 0;
+  box-sizing: border-box;
 }
 
 .profile__field-wrapper_last {
   border-bottom: none;
-  padding: 8px 0 192px 0;
+  margin-bottom: 192px;
 }
 
 .profile__label {
@@ -55,6 +57,7 @@
 .profile__input {
   padding: 10px 0;
   margin: 0;
+  box-sizing: border-box;
 
   font-family: inherit;
 
@@ -69,6 +72,14 @@
   color: var(--cl-text-primary);
 
   border: none;
+}
+
+.profile__input:focus{
+  outline: none;
+}
+
+.profile__field-wrapper:has(:focus){
+  border-bottom: 1px solid var(--brand-color-secondary);
 }
 
 .profile__input:invalid,
@@ -108,7 +119,8 @@
   }
 
   .profile__field-wrapper_last {
-    padding: 8px 0 180px 0;
+    padding: 8px 0;
+    margin-bottom: 180px;
   }
 }
 @media screen and (max-width: 425px) {
