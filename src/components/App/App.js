@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Login from '../Login/Login';
 
 // context
 import { AppContext } from '../../contexts/AppContext';
+
+import './App.css';
 
 // components
 import Header from '../Header/Header';
 import Main from '../Main/Main';
 import Movies from '../Movies/Movies';
 import Profile from '../Profile/Profile';
+import Login from '../Login/Login';
 import Register from '../Register/Register';
 import SavedMovies from '../SavedMovies/SavedMovies';
 import Footer from '../Footer/Footer';
@@ -19,7 +21,8 @@ import NotFound from '../NotFound/NotFound';
 // Использован normalize.сss или стилизован строго по БЭМ — без внешних файлов.
 
 function App() {
-  const [isLogged, setIsLogged] = useState(false);
+  const [isLogged, setIsLogged] = useState(true);
+  const [currentUser, setCurrentUser] = useState({email:'mail@yandex.ru',name:'Виталий'});
 
   // hardcode to change logged state
   function toggleUserState() {
@@ -27,7 +30,7 @@ function App() {
   }
 
   return (
-    <AppContext.Provider value={{ isLogged }}>
+    <AppContext.Provider value={{ isLogged, currentUser }}>
       <div className="root">
         <Switch>
           <Route exact path='/'>
@@ -64,9 +67,6 @@ function App() {
           <Route path='*'>
             <NotFound />
           </Route>
-
-
-
         </Switch>
         <p
           style={{
