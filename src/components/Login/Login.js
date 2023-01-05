@@ -29,7 +29,7 @@ export default function Login() {
   });
 
   return (
-    <main className='register'>
+    <main className='login auth'>
       <Link to='/'>
         <img
           src={imgLogo}
@@ -37,24 +37,24 @@ export default function Login() {
           lang='en'
           width='38'
           height='38'
-          className='register__logo' />
+          className='auth__logo' />
       </Link>
 
-      <h1 className='register__title'>Рады видеть!!</h1>
+      <h1 className='auth__title'>Рады видеть!</h1>
 
       <form
-        className='register__form'
+        className='auth__form'
         name='form'
         noValidate
         onSubmit={formik.handleSubmit}>
 
         <label
-          className='register__label'
+          className='auth__label'
           htmlFor='email'>
           E-mail
         </label>
         <input
-          className={`register__input ${formik.touched.email && formik.errors.email && 'register__input_invalid'}`}
+          className={`auth__input ${formik.touched.email && formik.errors.email && 'auth__input_invalid'}`}
           name='email'
           id='email'
           type='email'
@@ -63,17 +63,17 @@ export default function Login() {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         />
-        <p className='register__error-message'>
+        <p className='auth__error-message'>
           {formik.touched.email && formik.errors.email}
         </p>
 
         <label
-          className='register__label'
+          className='auth__label'
           htmlFor='password'>
           Пароль
         </label>
         <input
-          className={`register__input ${formik.touched.password && formik.errors.password && 'register__input_invalid'}`}
+          className={`auth__input ${formik.touched.password && formik.errors.password && 'auth__input_invalid'}`}
           name='password'
           id='password'
           type='password'
@@ -82,20 +82,20 @@ export default function Login() {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         />
-        <p className='register__error-message'>
+        <p className='auth__error-message'>
           {formik.touched.password && formik.errors.password}
         </p>
 
-        <div className='register__button-wrapper'>
+        <div className='auth__button-wrapper'>
           <button
             type='submit'
-            className='register__button'
+            className='auth__button'
             disabled={!formik.isValid || !formik.dirty}
           >
             Войти
           </button>
-          <p className='register__enter'>
-            Ещё не зарегистрированы? <Link to='/signup' className='register__link'>Регистрация</Link>
+          <p className='auth__enter'>
+            Ещё не зарегистрированы? <Link to='/signup' className='auth__link'>Регистрация</Link>
           </p>
         </div>
       </form>
