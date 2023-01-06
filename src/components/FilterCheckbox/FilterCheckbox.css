@@ -1,9 +1,9 @@
 .filterbox {
-  display: flex;
-  align-items: center;
+  display: inline-block;
 }
 
 .filterbox__label {
+  font-family: inherit;
   font-weight: 400;
   font-size: 14px;
   line-height: 1.29;
@@ -25,6 +25,7 @@
   margin: 0;
   width: 0;
   height: 0;
+  opacity: 0;
   clip: rect(0, 0, 0, 0);
 }
 
@@ -61,8 +62,20 @@
   background-color: var(--bg-primary-300);
 }
 
-.filterbox:has(:checked) .filterbox__eyeball {
-  transform: translateX(16px);
+.filterbox:not(:has(:checked)) .filterbox__eyeball:first-child {
+  transform: scale(1);
+}
+
+.filterbox:has(:checked) .filterbox__eyeball:first-child {
+  transform: scale(0) translateX(15px);
+}
+
+.filterbox:not(:has(:checked)) .filterbox__eyeball:last-child {
+  transform: scale(0) translateX(-15px);
+}
+
+.filterbox:has(:checked) .filterbox__eyeball:last-child {
+  transform: scale(1);
 }
 
 .filterbox:has(:focus) .filterbox__background {
