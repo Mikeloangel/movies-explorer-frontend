@@ -15,17 +15,17 @@
   gap: 12px;
 }
 
+.filterbox:has(:disabled) .filterbox__label {
+  color: var(--cl-text-200);
+  cursor: default;
+}
+
 .filterbox__check {
   padding: 0;
   margin: 0;
   width: 0;
   height: 0;
   clip: rect(0, 0, 0, 0);
-}
-
-.filterbox:has(:disabled) .filterbox__label {
-  color: var(--cl-text-200);
-  cursor: default;
 }
 
 .filterbox__background {
