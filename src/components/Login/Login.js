@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import * as Yup from 'yup';
 
 import './Login.css';
-import imgLogo from '../../images/logo.png';
+import Auth from '../Auth/Auth';
 
 export default function Login() {
   // formik form validation logics
@@ -29,18 +29,8 @@ export default function Login() {
   });
 
   return (
-    <main className='login auth'>
-      <Link to='/'>
-        <img
-          src={imgLogo}
-          alt='Logo: Movies Explorer'
-          lang='en'
-          width='38'
-          height='38'
-          className='auth__logo' />
-      </Link>
-
-      <h1 className='auth__title'>Рады видеть!</h1>
+    <Auth
+      title='Рады видеть!'>
 
       <form
         className='auth__form'
@@ -99,6 +89,7 @@ export default function Login() {
           </p>
         </div>
       </form>
-    </main>
+    </Auth>
+
   )
 }

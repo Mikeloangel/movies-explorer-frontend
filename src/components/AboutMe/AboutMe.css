@@ -63,6 +63,7 @@
   text-decoration: none;
 
   transition: var(--transition-hover);
+  width: fit-content;
 }
 
 .aboutme__link:hover {
