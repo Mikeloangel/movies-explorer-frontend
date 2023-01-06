@@ -1,8 +1,19 @@
 import React from 'react';
+import SearchForm from '../SearchForm/SearchForm';
 
-export default function SavedMovies(){
+import './SavedMovies.css';
+
+export default function SavedMovies() {
   return (
-    <p>SavedMovies</p>
+    <main className='saved-movies'>
+      <SearchForm />
+      <div style={{
+        width:'100%',
+        borderTop:'1px solid black'
+        }}>
+        Saved movies
+      </div>
+    </main>
   )
 }
 

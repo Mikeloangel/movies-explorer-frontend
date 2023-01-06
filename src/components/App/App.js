@@ -21,10 +21,10 @@ import NotFound from '../NotFound/NotFound';
 // Использован normalize.сss или стилизован строго по БЭМ — без внешних файлов.
 
 function App() {
-  const [isLogged, setIsLogged] = useState(false);
+  const [isLogged, setIsLogged] = useState(true);
   const [currentUser, setCurrentUser] = useState({email:'mail@yandex.ru',name:'Виталий'});
 
-  // hardcode to change logged state
+  /* HARDCODE: button handler to change logged state to check navbar look */
   function toggleUserState() {
     setIsLogged(!isLogged);
   }
@@ -69,6 +69,7 @@ function App() {
           </Route>
         </Switch>
 
+        {/* HARDCODE: button to change logged state to check navbar look */}
         <p
           style={{
             cursor: 'pointer',

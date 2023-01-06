@@ -1,0 +1,70 @@
+.filterbox {
+  display: flex;
+  align-items: center;
+}
+
+.filterbox__label {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.29;
+
+  color: var(--cl-text-primary);
+  cursor: pointer;
+
+  display: flex;
+  gap: 12px;
+}
+
+.filterbox__check {
+  padding: 0;
+  margin: 0;
+  width: 0;
+  height: 0;
+  clip: rect(0, 0, 0, 0);
+}
+
+.filterbox:has(:disabled) .filterbox__label {
+  color: var(--cl-text-200);
+  cursor: default;
+}
+
+.filterbox__background {
+  width: 36px;
+  height: 20px;
+
+  background-color: var(--brand-color);
+  border-radius: 20px;
+
+  cursor: pointer;
+
+  display: flex;
+  justify-content: flex-start;
+  padding: 2px;
+  box-sizing: border-box;
+}
+
+.filterbox:has(:disabled) .filterbox__background {
+  background-color: var(--bg-primary-200);
+  cursor: default;
+}
+
+.filterbox__eyeball {
+  width: 16px;
+  height: 16px;
+  border-radius: 100%;
+  background-color: var(--bg-primary-100);
+
+  transition: var(--transition-hover);
+}
+
+.filterbox:has(:disabled) .filterbox__eyeball {
+  background-color: var(--bg-primary-300);
+}
+
+.filterbox:has(:checked) .filterbox__eyeball {
+  transform: translateX(16px);
+}
+
+.filterbox:has(:focus) .filterbox__background {
+  outline: 1px solid var(--brand-color-secondary);
+}
