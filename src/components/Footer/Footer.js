@@ -14,10 +14,24 @@ export default function Footer() {
         </div>
         <ul className='footer__list'>
           <li className='footer__list-item'>
-            <a href='https://practicum.yandex.ru/' className='footer__list-link'>Яндекс.Практикум</a>
+            <a
+              href='https://practicum.yandex.ru/'
+              className='footer__list-link'
+              rel='noopener noreferrer'
+              target='_blank'
+            >
+              Яндекс.Практикум
+            </a>
           </li>
           <li className='footer__list-item'>
-            <a href='https://github.com/Mikeloangel/' className='footer__list-link'>Github</a>
+            <a
+              href='https://github.com/Mikeloangel/'
+              className='footer__list-link'
+              rel='noopener noreferrer'
+              target='_blank'
+            >
+              Github
+            </a>
           </li>
         </ul>
       </div>

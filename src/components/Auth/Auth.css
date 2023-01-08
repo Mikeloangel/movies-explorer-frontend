@@ -187,13 +187,6 @@
   }
 }
 
-/* resets for small screens wrapper behavior */
-@media screen and (max-width: 425px) and (max-height: 900px) {
-  .auth__button-wrapper {
-    all: inherit;
-  }
-}
-
 @media screen and (max-width: 425px) {
   .auth {
     max-width: 260px;

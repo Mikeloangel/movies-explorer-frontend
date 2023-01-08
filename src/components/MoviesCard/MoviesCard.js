@@ -21,7 +21,11 @@ export default function MoviesCard({ id, nameRU, trailerLink, image, like = fals
   return (
     <article className={`card card_theme_${theme}`}>
       <figure className='card__figure'>
-        <a href={trailerLink}>
+        <a
+          href={trailerLink}
+          rel='noopener noreferrer'
+          target='_blank'
+        >
           <picture className='card__picture'>
             <source media="(min-width:1000px)" srcSet={baseURL + image.formats.thumbnail.url} />
             {image.formats.large && (<source media="(min-width:825px)" srcSet={baseURL + image.formats.large.url} />)}

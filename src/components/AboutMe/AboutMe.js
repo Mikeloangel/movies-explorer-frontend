@@ -16,7 +16,13 @@ export default function aboutMe() {
           С 2015 года работал в компании «СКБ Контур». После того, как прошёл курс по веб-разработке,
           начал заниматься фриланс-заказами и ушёл с постоянной работы.
         </p>
-        <a href='https://github.com/Mikeloangel/' className='aboutme__link'>Github</a>
+        <a
+          href='https://github.com/Mikeloangel/'
+          className='aboutme__link'
+          target='_blank'
+          rel="noopener noreferrer">
+          Github
+        </a>
       </div>
       <img src={imgProfile} alt='Виталий' className='aboutme__pic' />
     </div>
