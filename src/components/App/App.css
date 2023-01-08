@@ -42,12 +42,12 @@
 }
 
 @media screen and (max-width: 768px) {
-  .root {
+  .app {
     --padding-section: 18px 30px;
   }
 }
 @media screen and (max-width: 425px) {
-  .root {
+  .app {
     --padding-section: 18px 14px;
   }
 }
