@@ -75,7 +75,7 @@ function App() {
 
   return (
     <AppContext.Provider value={{ isLogged, currentUser, isCardListReady, cardList }}>
-      <div className="root">
+      <div className="app">
         <Switch>
           <Route exact path='/'>
             <Header theme='dark' />

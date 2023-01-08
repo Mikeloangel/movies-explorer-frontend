@@ -26,3 +26,5 @@ This SPA website provides authentification and list with films and saved films.
 * [Backend API](https://github.com/Mikeloangel/movies-explorer-api)
 * [Frontend](https://github.com/Mikeloangel/movies-explorer-frontend)
 
+***
+Uses icons from [Icons8](https://icons8.com)
