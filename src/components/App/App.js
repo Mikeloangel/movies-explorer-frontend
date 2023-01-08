@@ -19,6 +19,7 @@ import NotFound from '../NotFound/NotFound';
 
 function App() {
   const [isLogged, setIsLogged] = useState(false);
+  // eslint-disable-next-line
   const [currentUser, setCurrentUser] = useState({ email: 'mail@yandex.ru', name: 'Виталий' });
 
   const [cardList, setCardList] = useState([]);
