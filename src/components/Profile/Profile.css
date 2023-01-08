@@ -68,18 +68,18 @@
   line-height: 1.18;
 
   text-align: right;
-  direction:ltr;
+  direction: ltr;
 
   color: var(--cl-text-primary);
 
   border: none;
 }
 
-.profile__input:focus{
+.profile__input:focus {
   outline: none;
 }
 
-.profile__field-wrapper:has(:focus){
+.profile__field-wrapper:has(:focus) {
   border-bottom: 1px solid var(--brand-color-secondary);
 }
 
@@ -103,6 +103,13 @@
   text-align: center;
 
   color: var(--cl-text-primary);
+
+  transition: var(--transition-hover);
+}
+
+.profile__button:hover {
+  opacity: .7;
+  text-decoration: underline;
 }
 
 .profile__button:disabled {
