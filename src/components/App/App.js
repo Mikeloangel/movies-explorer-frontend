@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 // context
@@ -17,20 +17,64 @@ import SavedMovies from '../SavedMovies/SavedMovies';
 import Footer from '../Footer/Footer';
 import NotFound from '../NotFound/NotFound';
 
-// Сделана микроанимация кнопок, ссылок и инпутов.
-// Использован normalize.сss или стилизован строго по БЭМ — без внешних файлов.
-
 function App() {
-  const [isLogged, setIsLogged] = useState(true);
-  const [currentUser, setCurrentUser] = useState({email:'mail@yandex.ru',name:'Виталий'});
+  const [isLogged, setIsLogged] = useState(false);
+  const [currentUser, setCurrentUser] = useState({ email: 'mail@yandex.ru', name: 'Виталий' });
+
+  const [cardList, setCardList] = useState([]);
+  const [isCardListReady, setIsCardListReady] = useState(false);
+
+  // HARDCODE: loads some data from API
+  useEffect(() => {
+    if (isLogged) {
+      fetch('https://api.nomoreparties.co/beatfilm-movies',
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(res => res.json())
+        .then(data => {
+          setIsCardListReady(true);
+          // data[0].like = true;
+          setCardList(data.slice(0, 16));
+        });
+    } else {
+      setIsCardListReady(false);
+      setCardList([]);
+    }
+  }, [isLogged]);
 
   /* HARDCODE: button handler to change logged state to check navbar look */
   function toggleUserState() {
-    setIsLogged(!isLogged);
+    setIsLogged((prev) => !prev);
+  }
+
+  function handleMoviesCardLike(id) {
+    // HARDCODE
+    setCardList(
+      cardList.map((item) => {
+        if (item.id === id) {
+          item.like = !item.like;
+        }
+        return item;
+      }));
+  }
+
+  function handleSavedMoviesCardLike(id) {
+    // HARDCODE
+    setCardList(
+      cardList.map((item) => {
+        if (item.id === id) {
+          item.like = !item.like;
+        }
+        return item;
+      }));
   }
 
   return (
-    <AppContext.Provider value={{ isLogged, currentUser }}>
+    <AppContext.Provider value={{ isLogged, currentUser, isCardListReady, cardList }}>
       <div className="root">
         <Switch>
           <Route exact path='/'>
@@ -41,13 +85,13 @@ function App() {
 
           <Route exact path='/movies'>
             <Header />
-            <Movies />
+            <Movies onMoviesCardLike={handleMoviesCardLike} />
             <Footer />
           </Route>
 
           <Route exact path='/saved-movies'>
             <Header />
-            <SavedMovies />
+            <SavedMovies onMoviesCardLike={handleSavedMoviesCardLike} />
             <Footer />
           </Route>
 
@@ -73,7 +117,7 @@ function App() {
         <p
           style={{
             cursor: 'pointer',
-            fontSize: '10px',
+            fontSize: '15px',
             backgroundColor: 'pink',
             position: 'fixed',
             top: 0,
@@ -83,7 +127,7 @@ function App() {
             outline: '2px dashed coral'
           }}
           onClick={toggleUserState}>
-          Click here to change state: is {isLogged ? 'logged' : 'logged out'}
+          Click here to log {isLogged ? 'OUT' : 'IN'}
         </p>
       </div>
     </AppContext.Provider>

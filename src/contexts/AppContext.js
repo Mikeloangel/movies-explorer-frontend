@@ -1,5 +1,7 @@
 import React from "react";
 
-// { isLogged }
-// { user {name, email}}
+// isLogged – Boolean
+// currentUser – {name, email}
+// isCardListReady – Boolean
+// cardList – [{} ...]
 export const AppContext = React.createContext();

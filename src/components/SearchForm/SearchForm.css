@@ -100,8 +100,41 @@
   background-size: 13px 13px;
 }
 
-.search__submit:focus{
+.search__submit:focus {
   background-size: 16px 16px;
   outline: 1px solid var(--brand-color-secondary);
   outline-offset: 1px;
+}
+
+@media screen and (max-width: 768px) {
+  .search {
+    padding: 67px 0 129px 0;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .search {
+    padding: 74px 0 88px 0;
+  }
+
+  .search__ico {
+    display: none;
+  }
+
+  .search__input {
+    margin-left: 0;
+    padding: 7px 0;
+
+    text-align: left;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1.2;
+  }
+
+  .search__form-wrapper {
+    padding: 0 0 7px 0;
+    margin-bottom: 42px;
+
+    gap: 0;
+  }
 }

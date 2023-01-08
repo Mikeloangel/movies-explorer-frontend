@@ -36,7 +36,7 @@ export default function FilterCheckbox({ label, id = 'def', isDisabled, onChange
           <div className='filterbox__eyeball'></div>
           <div className='filterbox__eyeball'></div>
         </div>
-        {label}
+        <p className='filterbox__text'>{label}</p>
       </label>
     </div>
   )
