@@ -38,7 +38,9 @@ function App() {
         .then(res => res.json())
         .then(data => {
           setIsCardListReady(true);
-          // data[0].like = true;
+          data[0].like = true;
+          data[3].like = true;
+          data[5].like = true;
           setCardList(data.slice(0, 16));
         });
     } else {
