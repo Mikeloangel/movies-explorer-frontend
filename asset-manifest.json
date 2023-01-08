@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/static/css/main.21e9eeba.chunk.css",
+    "main.js": "/static/js/main.4dc77621.chunk.js",
+    "main.js.map": "/static/js/main.4dc77621.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.3d395906.js",
+    "runtime-main.js.map": "/static/js/runtime-main.3d395906.js.map",
+    "static/js/2.e8ce7d86.chunk.js": "/static/js/2.e8ce7d86.chunk.js",
+    "static/js/2.e8ce7d86.chunk.js.map": "/static/js/2.e8ce7d86.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.f249f94c5275407f79fbe632307b5fd0.js": "/precache-manifest.f249f94c5275407f79fbe632307b5fd0.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/main.21e9eeba.chunk.css.map": "/static/css/main.21e9eeba.chunk.css.map",
+    "static/js/2.e8ce7d86.chunk.js.LICENSE.txt": "/static/js/2.e8ce7d86.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/static/media/Inter-Regular.dc131113.woff2",
+    "static/media/ico-account.svg": "/static/media/ico-account.51a25df0.svg",
+    "static/media/Promo.css": "/static/media/promo.d346464c.png",
+    "static/media/student.png": "/static/media/student.97fae7cb.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.3d395906.js",
+    "static/js/2.e8ce7d86.chunk.js",
+    "static/css/main.21e9eeba.chunk.css",
+    "static/js/main.4dc77621.chunk.js"
+  ]
+}
