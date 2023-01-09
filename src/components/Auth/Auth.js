@@ -12,8 +12,7 @@ export default function Auth({children, title}) {
       <Link to='/'>
         <img
           src={imgLogo}
-          alt='Logo: Movies Explorer'
-          lang='en'
+          alt='Логотип Movie Explorer'
           width='38'
           height='38'
           className='auth__logo' />

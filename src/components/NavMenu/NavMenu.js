@@ -18,11 +18,11 @@ export default function NavMenu({ theme }) {
   return (
     <>
       <div
-        className={`burger ${isMenuOpen && 'burger_active'} burger_theme_${theme} `}
+        className={`burger ${isMenuOpen ? 'burger_active' : ''} burger_theme_${theme} `}
         onClick={toggleMenuOpen}>
         <div className="burger-stripe"></div>
       </div>
-      <nav className={`navigation navigation__type_mobile ${isMenuOpen && 'navigation_active'}`}>
+      <nav className={`navigation ${isMenuOpen ? 'navigation_active' : ''} navigation_type_mobile`}>
         <ul className={`navigation__list navigation__list_theme_${theme}`}>
           <li className='navigation__item'>
             <NavLink
@@ -63,7 +63,8 @@ export default function NavMenu({ theme }) {
         </NavLink>
 
       </nav>
-      <div className={`navigation__list-overlay ${isMenuOpen && 'navigation__list-overlay_active'}`} onClick={handleCloseMenu}></div>
+
+      <div className={`overlay ${isMenuOpen ? 'overlay_active' : ''}`} onClick={handleCloseMenu}></div>
     </>
   )
 }

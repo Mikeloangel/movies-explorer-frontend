@@ -27,16 +27,16 @@ export default function FilterCheckbox({ label, id = 'def', isDisabled, onChange
           onChange={handleCheck}
           disabled={isDisabled}
         />
-        <div
+        <span
           className='filterbox__background'
           role='checkbox'
           aria-checked={isChecked}
           aria-labelledby={`filter_${id}`}
         >
-          <div className='filterbox__eyeball'></div>
-          <div className='filterbox__eyeball'></div>
-        </div>
-        <p className='filterbox__text'>{label}</p>
+          <span className='filterbox__eyeball'></span>
+          <span className='filterbox__eyeball'></span>
+        </span>
+        <span className='filterbox__text'>{label}</span>
       </label>
     </div>
   )

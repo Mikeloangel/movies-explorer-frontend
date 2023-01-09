@@ -39,7 +39,6 @@ export default function Register() {
       <form
         className='auth__form'
         name='form'
-        noValidate
         onSubmit={formik.handleSubmit}>
 
         <label

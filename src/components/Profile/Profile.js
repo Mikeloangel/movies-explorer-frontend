@@ -39,7 +39,6 @@ export default function Profile() {
       <form
         className='profile__form'
         name='form'
-        noValidate
         onSubmit={formik.handleSubmit}
       >
         <div className='profile__field-wrapper'>

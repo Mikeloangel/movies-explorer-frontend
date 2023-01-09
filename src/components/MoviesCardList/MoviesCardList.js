@@ -28,13 +28,13 @@ export default function MoviesCardList({ cardList, emptyMessageSettings, onCardL
   }
 
   return (
-    <section className='cardlist'>
+    <section className='cardlist' aria-label='Список фильмов'>
       {
         !isCardListReady ?
           <Preloader /> :
           (
             cardList.length === 0 ?
-              <section className='cardlist__empty'>
+              <section className='cardlist__empty' aria-label='Это все фильмы'>
                 <h2 className='cardlist__empty-title'>{emptyMessageSettings?.title || 'Список пуст'}</h2>
                 <Link to={emptyMessageSettings?.redirect || '/'} className='cardlist__empty-link'>
                   {emptyMessageSettings?.redirectTitle || 'Попрбовать сначала'}
@@ -53,7 +53,7 @@ export default function MoviesCardList({ cardList, emptyMessageSettings, onCardL
       }
       {
         isCardListReady && cardList.length !== 0 && (
-          <section className='cardlist__button-section'>
+          <section className='cardlist__button-section' aria-label='Еще больше фильмов!'>
             <button type='button' className='cardlist__button'>Ещё</button>
           </section>
         )

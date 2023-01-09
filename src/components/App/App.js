@@ -18,7 +18,7 @@ import Footer from '../Footer/Footer';
 import NotFound from '../NotFound/NotFound';
 
 function App() {
-  const [isLogged, setIsLogged] = useState(false);
+  const [isLogged, setIsLogged] = useState(true);
   // eslint-disable-next-line
   const [currentUser, setCurrentUser] = useState({ email: 'mail@yandex.ru', name: 'Виталий' });
 
@@ -81,25 +81,25 @@ function App() {
       <div className="app">
         <Switch>
           <Route exact path='/'>
-            <Header theme='dark' />
+            <Header theme='dark' isLoggedDebug={false} />
             <Main />
             <Footer />
           </Route>
 
           <Route exact path='/movies'>
-            <Header />
+            <Header isLoggedDebug={true}/>
             <Movies onMoviesCardLike={handleMoviesCardLike} />
             <Footer />
           </Route>
 
           <Route exact path='/saved-movies'>
-            <Header />
+            <Header isLoggedDebug={true}/>
             <SavedMovies onMoviesCardLike={handleSavedMoviesCardLike} />
             <Footer />
           </Route>
 
           <Route exact path='/profile'>
-            <Header />
+            <Header isLoggedDebug={true}/>
             <Profile />
           </Route>
 
@@ -117,7 +117,7 @@ function App() {
         </Switch>
 
         {/* HARDCODE: button to change logged state to check navbar look */}
-        <p
+        {/* <p
           style={{
             cursor: 'pointer',
             fontSize: '15px',
@@ -131,7 +131,7 @@ function App() {
           }}
           onClick={toggleUserState}>
           Click here to log {isLogged ? 'OUT' : 'IN'}
-        </p>
+        </p> */}
       </div>
     </AppContext.Provider>
   );

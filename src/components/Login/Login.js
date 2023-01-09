@@ -35,7 +35,6 @@ export default function Login() {
       <form
         className='auth__form'
         name='form'
-        noValidate
         onSubmit={formik.handleSubmit}>
 
         <label

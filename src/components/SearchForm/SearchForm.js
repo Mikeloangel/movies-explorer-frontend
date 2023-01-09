@@ -11,7 +11,7 @@ export default function SearchForm() {
   }
 
   return (
-    <section className='search'>
+    <section className='search' aria-label='Поиск любимых фильмов'>
       <form name='search-form' className='search__form' noValidate>
         <div className='search__form-wrapper'>
           <img
