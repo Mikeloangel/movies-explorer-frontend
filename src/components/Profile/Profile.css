@@ -1,0 +1,162 @@
+.profile {
+  max-width: var(--width-section);
+  margin: 0 auto;
+  padding: var(--padding-section);
+  box-sizing: border-box;
+}
+
+.profile__name {
+  padding: 56px 0 105px 0;
+  margin: 0 auto;
+  box-sizing: border-box;
+  text-align: center;
+
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.2;
+
+  color: var(--cl-text-primary);
+}
+
+.profile__form {
+  padding: 0;
+  margin: 0 auto;
+
+  max-width: 410px;
+}
+
+.profile__field-wrapper {
+  border-bottom: 1px solid var(--bg-primary-300);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 8px 0;
+  box-sizing: border-box;
+}
+
+.profile__field-wrapper_last {
+  border-bottom: none;
+  margin-bottom: 192px;
+}
+
+.profile__label {
+  padding: 0;
+  margin: 0;
+
+  flex-basis: 141px;
+
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1.18;
+
+  color: var(--cl-text-primary);
+}
+
+.profile__input {
+  padding: 10px 0;
+  margin: 0;
+  box-sizing: border-box;
+
+  font-family: inherit;
+
+  flex-grow: 1;
+
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 1.18;
+
+  text-align: right;
+  direction: ltr;
+
+  color: var(--cl-text-primary);
+
+  border: none;
+}
+
+.profile__input:focus {
+  outline: none;
+}
+
+.profile__field-wrapper:has(:focus) {
+  border-bottom: 1px solid var(--brand-color-secondary);
+}
+
+.profile__input:invalid,
+.profile__input_invalid,
+.profile__label_invalid {
+  color: var(--brand-color-error);
+}
+
+.profile__button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: block;
+
+  margin: 16px auto;
+
+  font-size: 13px;
+  line-height: 1.23;
+
+  text-align: center;
+
+  color: var(--cl-text-primary);
+
+  transition: var(--transition-hover);
+}
+
+.profile__button:hover {
+  opacity: .7;
+  text-decoration: underline;
+}
+
+.profile__button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.profile__button_accent {
+  color: var(--brand-color-error);
+}
+
+@media screen and (max-width: 768px) {
+  .profile__name {
+    padding: 31% 0 11% 0;
+  }
+
+  .profile__field-wrapper_last {
+    padding: 8px 0;
+    margin-bottom: 180px;
+  }
+}
+@media screen and (max-width: 425px) {
+  .profile__name {
+    padding: 18% 0 21% 0;
+  }
+
+  .profile__form {
+    padding: 0 16px;
+  }
+
+  .profile__button {
+    font-size: 12px;
+  }
+
+  .profile__button-wrapper {
+    background: rgb(255, 255, 255);
+    background: linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(255, 255, 255, 1) 70%,
+      rgba(255, 255, 255, 0) 100%
+    );
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    min-height: 125px;
+  }
+}

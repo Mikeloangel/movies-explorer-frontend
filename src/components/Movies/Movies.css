@@ -1,0 +1,6 @@
+.movies {
+  max-width: var(--width-section);
+  margin: 0 auto;
+  padding: var(--padding-section);
+  box-sizing: border-box;
+}

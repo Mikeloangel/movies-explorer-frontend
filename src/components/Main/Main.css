@@ -1,0 +1,6 @@
+.main {
+  max-width: var(--width-section);
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+}
