@@ -4,8 +4,7 @@ import { Route, Switch, useHistory } from 'react-router-dom';
 // context
 import { AppContext } from '../../contexts/AppContext';
 
-import * as ApiAuth from '../../utils/ApiAuth';
-import api from '../../utils/Api';
+import * as Api from '../../utils/Api';
 import './App.css';
 
 // components
@@ -24,9 +23,12 @@ import InfoToolTip from '../InfoToolTip/InfoToolTip';
 import imgSuccess from '../../images/succeed.png';
 import imgFail from '../../images/fail.png';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
+import Preloader from '../Preloader/Preloader';
 
 function App() {
   const history = useHistory();
+
+  const [isAppReady, setIsAppReady] = useState(false);
 
   const [isLogged, setIsLogged] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
@@ -62,11 +64,6 @@ function App() {
     }
   }, [isLogged]);
 
-  /* HARDCODE: button handler to change logged state to check navbar look */
-  function toggleUserState() {
-    setIsLogged((prev) => !prev);
-  }
-
   function handleMoviesCardLike(id) {
     // HARDCODE
     setCardList(
@@ -93,17 +90,20 @@ function App() {
   // if can getUsersMe then we have valid cookies and can update userinfo
   // othervise logout
   useEffect(() => {
-    ApiAuth.getUserMe()
+    Api.getUserMe()
       .then(userInfo => {
         setCurrentUser(userInfo);
         setIsLogged(true);
-        history.push('/');
       })
       .catch((err) => {
-        console.log(err);
         setIsLogged(false);
         setCurrentUser({});
-        history.push('/signin');
+        if (isLogged) {
+          history.push('/signin');
+        }
+      })
+      .finally(() => {
+        setIsAppReady(true);
       });
   }, [history, isLogged]);
 
@@ -124,48 +124,98 @@ function App() {
     history.push('/');
   }
 
+  function handleLogout() {
+    Api.logout()
+      .then(msg => {
+        setIsLogged(false);
+        setCurrentUser({});
+        history.push('/');
+        setInfoToolTipMsg(msg);
+        setInfoToolTipType('success');
+      })
+      .catch(() => {
+        setInfoToolTipMsg('Произошла ошибка попробуйте заново');
+        setInfoToolTipType('fail');
+      })
+  }
+
+  function handleProfileChange(updatedUser, err = null){
+    if(err){
+      setInfoToolTipMsg(err);
+      setInfoToolTipType('fail');
+      return;
+    }
+
+    setCurrentUser(updatedUser);
+    setInfoToolTipMsg('Успешно обновленно');
+    setInfoToolTipType('success');
+  }
+
+  function handleRegisterOnSuccess() {
+    setInfoToolTipMsg('Успешно зарегистрированы');
+    setInfoToolTipType('success');
+    history.push('/signin');
+  }
+
+  function handleRegisterOnFail(msg) {
+    setInfoToolTipMsg(msg);
+    setInfoToolTipType('fail');
+  }
+
   return (
     <AppContext.Provider value={{ isLogged, currentUser, isCardListReady, cardList }}>
       <div className="app">
-        <Switch>
-          <Route exact path='/'>
-            <Header theme='dark' />
-            <Main />
-            <Footer />
-          </Route>
+        {
+          isAppReady ?
+            (
+              <Switch>
+                <Route exact path='/'>
+                  <Header theme='dark' />
+                  <Main />
+                  <Footer />
+                </Route>
 
-          <ProtectedRoute exact path='/movies' >
-            <Header />
-            <Movies onMoviesCardLike={handleMoviesCardLike} />
-            <Footer />
-          </ProtectedRoute>
+                <ProtectedRoute exact path='/movies' >
+                  <Header />
+                  <Movies onMoviesCardLike={handleMoviesCardLike} />
+                  <Footer />
+                </ProtectedRoute>
 
 
-          <ProtectedRoute exact path='/saved-movies'>
-            <Header />
-            <SavedMovies onMoviesCardLike={handleSavedMoviesCardLike} />
-            <Footer />
-          </ProtectedRoute>
+                <ProtectedRoute exact path='/saved-movies'>
+                  <Header />
+                  <SavedMovies onMoviesCardLike={handleSavedMoviesCardLike} />
+                  <Footer />
+                </ProtectedRoute>
 
-          <ProtectedRoute exact path='/profile'>
-            <Header />
-            <Profile />
-          </ProtectedRoute>
+                <ProtectedRoute exact path='/profile'>
+                  <Header />
+                  <Profile
+                    onChange={handleProfileChange}
+                    onLogout={handleLogout} />
+                </ProtectedRoute>
 
-          <Route exact path='/signup'>
-            <Register />
-          </Route>
+                <Route exact path='/signup'>
+                  <Register
+                    onFail={handleRegisterOnFail}
+                    onSuccess={handleRegisterOnSuccess}
+                  />
+                </Route>
 
-          <Route exact path='/signin'>
-            <Login
-              onFail={handleLoginOnFail}
-              onSuccess={handleLoginOnSuccess} />
-          </Route>
+                <Route exact path='/signin'>
+                  <Login
+                    onFail={handleLoginOnFail}
+                    onSuccess={handleLoginOnSuccess} />
+                </Route>
 
-          <Route path='*'>
-            <NotFound />
-          </Route>
-        </Switch>
+                <Route path='*'>
+                  <NotFound />
+                </Route>
+              </Switch>
+            ) :
+            (<Preloader />)
+        }
+
 
         {/* success' 'fail' */}
         <InfoToolTip
@@ -173,24 +223,8 @@ function App() {
           imgList={imgList}
           type={infoToolTipType}
           onClose={handleInfoToolTipClose}
-          autoClose='10000' />
+          autoClose='3000' />
 
-        {/* HARDCODE: button to change logged state to check navbar look */}
-        {/* <p
-          style={{
-            cursor: 'pointer',
-            fontSize: '15px',
-            backgroundColor: 'pink',
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            padding: 0,
-            margin: 0,
-            outline: '2px dashed coral'
-          }}
-          onClick={toggleUserState}>
-          Click here to log {isLogged ? 'OUT' : 'IN'}
-        </p> */}
       </div>
     </AppContext.Provider >
   );

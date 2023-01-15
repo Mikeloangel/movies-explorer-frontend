@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 
 import { AppContext } from '../../contexts/AppContext';
-import * as apiAuth from "../../utils/ApiAuth";
+import * as api from "../../utils/Api";
 
 import { useFormik } from "formik";
 import * as Yup from 'yup';
@@ -12,7 +12,7 @@ import Auth from '../Auth/Auth';
 
 export default function Login({ onSuccess, onFail }) {
   const { isLogged } = useContext(AppContext);
-  const [isSubmittingForm, setIsSubmittingForm] = useState(false)
+  const [isSubmittingForm, setIsSubmittingForm] = useState(false);
 
   // formik form validation logics
   const formik = useFormik({
@@ -32,17 +32,15 @@ export default function Login({ onSuccess, onFail }) {
     onSubmit: (values) => {
       setIsSubmittingForm(true);
 
-      apiAuth.authorization(values.email, values.password)
-        .then(msg=>{
+      api.authorization(values.email, values.password)
+        .then(msg => {
           console.log(msg);
-          // onSuccess(msg);
+          onSuccess(msg);
         })
         .catch(errorMsg => {
           onFail(errorMsg);
-          console.log(errorMsg);
-        })
-        .finally(()=>{
           setIsSubmittingForm(false);
+          console.log(errorMsg);
         })
     }
   });
@@ -101,7 +99,7 @@ export default function Login({ onSuccess, onFail }) {
               type='submit'
               className='auth__button'
               // disabled={!(formik.isValid && (formik.dirty && !isSubmittingForm))}
-              disabled={!(formik.isValid && ( !isSubmittingForm))}
+              disabled={!(formik.isValid && (!isSubmittingForm))}
             >
               {isSubmittingForm ? 'В процессе...' : 'Войти'}
             </button>

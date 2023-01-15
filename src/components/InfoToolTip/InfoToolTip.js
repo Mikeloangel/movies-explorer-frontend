@@ -22,8 +22,14 @@ function InfoToolTip({ message, imgList, type = 'hidden', onClose, autoClose = 1
     }
   }, [type, autoClose, onClose]);
 
+  function handlePopupCloseClick(e) {
+    if (e.target.classList.contains('popup_info')) {
+      onClose();
+    }
+  }
+
   return (
-    <div className={`popup popup_info ${type !== 'hidden' ? 'popup_opened' : ''}`}>
+    <div className={`popup popup_info ${type !== 'hidden' ? 'popup_opened' : ''}`} onClick={handlePopupCloseClick}>
       <div className="popup__content popup__content_tooltip">
         <button className="popup__btn-close" title="Закрыть окно" type="button">
           <img alt="Закрыть" className="popup__btn-close-img" src={btnClosePopup} onClick={onClose} />

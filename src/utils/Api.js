@@ -1,99 +1,123 @@
 import { BASE_API_URL } from "./variables";
+import parseErrorMessage from "./parseErrorMessage";
 
-class Api {
-  constructor({ baseUrl, headers }) {
-    this._baseUrl = baseUrl;
-    this._headers = headers;
-  }
-
-  async _getJSON(res) {
-    if (res.ok) return res.json();
-
-    //getting proper error message from JSON response {'message':''}
-    const isJSON = res.headers.get('content-type')?.includes('application/json');
-    const data = isJSON ? await res.json() : null;
-    const error = (data && data.message) || res.status;
-
-    return Promise.reject(error);
-  }
-
-  _getRouteRequest(route, method, body = null) {
-    return body ?
-      fetch(`${this._baseUrl}${route}`, { method, headers: this._headers, body: JSON.stringify(body),  credentials: 'include' })
-        .then(this._getJSON) :
-      fetch(`${this._baseUrl}${route}`, { method, headers: this._headers, credentials: 'include' })
-        .then(this._getJSON);
-
-  }
-
-  handleError(response, cb = null) {
-    console.error(`Api error: ${response}`);
-    if (typeof cb === 'function') cb(response)
-  }
-
-  //API ROUTES
-
-  /**
-   *
-   * @returns on succes parsed JSON with array of cards {createdAt, likes, link, name, owner, _id
-   *
-   */
-  // getInitialCards = () => this._getRouteRequest('/cards', 'GET');
-
-  /**
-   *
-   * @returns on succes parsed JSON with {about,avatar,cohort,name, _id}
-   */
-  getUserMe = () => this._getRouteRequest('/users/me', 'GET');
-
-  /**
-   *
-   * @param {Object} body {name, about}
-   * @returns on succes parsed JSON with updated user {about,avatar,cohort,name, _id}
-   */
-  // pathchUserMe = body => this._getRouteRequest('/users/me', 'PATCH', body);
-
-  /**
-   *
-   * @param {Object} body {link,name}
-   * @returns on success parsed JSON with new card {createdAt, likes, link, name, owner, _id
-   */
-  // postCard = body => this._getRouteRequest('/cards', 'POST', body);
-
-  /**
-   *
-   * @param {String} id card id
-   * @returns on succes parsed JSON with message {message:'Пост удален'}
-   */
-  // deleteCard = id => this._getRouteRequest(`/cards/${id}`, 'DELETE');
-
-  /**
-   *
-   * @param {String} id card id
-   * @returns on succes parsed JSON with updated card {createdAt, likes, link, name, owner, _id
-   */
-  // putLike = id => this._getRouteRequest(`/cards/${id}/likes`, 'PUT');
-
-  /**
-   *
-   * @param {String} id card id
-   * @returns on succes parsed JSON with updated card {createdAt, likes, link, name, owner, _id
-   */
-  // deleteLike = id => this._getRouteRequest(`/cards/${id}/likes`, 'DELETE');
-
-  /**
-   *
-   * @param {String} url valid link
-   * @returns on success parsed JSON with current user {about,avatar,cohort,name, _id}
-   */
-  // patchUserAvatar = url => this._getRouteRequest(`/users/me/avatar`, 'PATCH', { avatar: url });
+export const BASE_URL = BASE_API_URL;
+export const BASE_HEADERS = {
+  'Content-Type': 'application/json',
 }
 
-const api = new Api({
-  baseUrl: BASE_API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  }
-});
+/**
+ * Makes fetch request to API
+ * @param {String} endpoint AuthAPI endpoint
+ * @param {String} method
+ * @param {Object} body
+ * @param {Object} headers
+ * @returns {Promise}
+ */
+const fetchApi = async (endpoint, method, body = null, headers = BASE_HEADERS, credentials = 'same-origin') => {
+  const config = { method, headers, credentials };
 
-export default api;
+  if (body) {
+    config.body = JSON.stringify(body);
+  }
+
+  return await fetch(`${BASE_URL}/${endpoint}`, config);
+}
+
+// authorization
+export const authorization = async (email, password) => {
+  const res = await fetchApi('signin', 'post', { password, email },
+    {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      "withCredentials": true,
+    },
+    'include'
+  );
+
+  if (res.status === 200) {
+    const data = await res.json();
+
+    return data.message;
+  }
+
+  const errorMessage = await parseErrorMessage(res, 'message');
+  return Promise.reject(errorMessage);
+}
+
+
+// logout
+export const logout = async () => {
+  const res = await fetchApi('signout', 'get', null,
+    {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      "withCredentials": true,
+    },
+    'include');
+
+  if (res.status === 200) {
+    const data = await res.json();
+    return data.message;
+  }
+
+  const errorMessage = await parseErrorMessage(res, 'message');
+  return Promise.reject(errorMessage);
+
+}
+
+// register
+export const register = async (name, email, password) => {
+  const res = await fetchApi('signup', 'post', { name, password, email });
+
+  if (res.status === 201) {
+    return res.json();
+  }
+
+  const errorMessage = await parseErrorMessage(res, 'message');
+  return Promise.reject(errorMessage);
+}
+
+// getusers me
+export const getUserMe = async () => {
+  const res = await fetchApi('users/me', 'get', null,
+    {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      "withCredentials": true,
+    },
+    'include'
+  );
+
+  if (res.status === 200) {
+    const data = await res.json();
+
+    return data;
+  }
+
+  const errorMessage = await parseErrorMessage(res, 'message');
+  return Promise.reject(errorMessage);
+
+}
+
+// edit user
+export const patchUserMe = async (name, email) => {
+  const res = await fetchApi(
+    'users/me',
+    'PATCH',
+    { name, email },
+    {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      // "withCredentials": true,
+    },
+    'include'
+    );
+
+  if (res.status === 200) {
+    return res.json();
+  }
+
+  const errorMessage = await parseErrorMessage(res, 'message');
+  return Promise.reject(errorMessage);
+}
