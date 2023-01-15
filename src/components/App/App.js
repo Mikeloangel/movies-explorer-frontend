@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 
 // context
 import { AppContext } from '../../contexts/AppContext';
 
+import * as ApiAuth from '../../utils/ApiAuth';
+import api from '../../utils/Api';
 import './App.css';
 
 // components
@@ -16,14 +18,25 @@ import Register from '../Register/Register';
 import SavedMovies from '../SavedMovies/SavedMovies';
 import Footer from '../Footer/Footer';
 import NotFound from '../NotFound/NotFound';
+import InfoToolTip from '../InfoToolTip/InfoToolTip';
+
+// images
+import imgSuccess from '../../images/succeed.png';
+import imgFail from '../../images/fail.png';
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
 function App() {
-  const [isLogged, setIsLogged] = useState(true);
-  // eslint-disable-next-line
-  const [currentUser, setCurrentUser] = useState({ email: 'mail@yandex.ru', name: 'Виталий' });
+  const history = useHistory();
+
+  const [isLogged, setIsLogged] = useState(false);
+  const [currentUser, setCurrentUser] = useState({});
 
   const [cardList, setCardList] = useState([]);
   const [isCardListReady, setIsCardListReady] = useState(false);
+
+  const [infoToolTipType, setInfoToolTipType] = useState('hidden');
+  const [infoToolTipMsg, setInfoToolTipMsg] = useState('');
+  const imgList = { 'success': imgSuccess, 'fail': imgFail };
 
   // HARDCODE: loads some data from API
   useEffect(() => {
@@ -76,45 +89,91 @@ function App() {
       }));
   }
 
+
+  // if can getUsersMe then we have valid cookies and can update userinfo
+  // othervise logout
+  useEffect(() => {
+    ApiAuth.getUserMe()
+      .then(userInfo => {
+        setCurrentUser(userInfo);
+        setIsLogged(true);
+        history.push('/');
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLogged(false);
+        setCurrentUser({});
+        history.push('/signin');
+      });
+  }, [history, isLogged]);
+
+
+  function handleInfoToolTipClose() {
+    setInfoToolTipMsg('');
+    setInfoToolTipType('hidden');
+  }
+
+  function handleLoginOnFail(errMsg) {
+    console.error(errMsg);
+    setInfoToolTipMsg('Неверный логин или пароль!');
+    setInfoToolTipType('fail');
+  }
+
+  function handleLoginOnSuccess() {
+    setIsLogged(true);
+    history.push('/');
+  }
+
   return (
     <AppContext.Provider value={{ isLogged, currentUser, isCardListReady, cardList }}>
       <div className="app">
         <Switch>
           <Route exact path='/'>
-            <Header theme='dark' isLoggedDebug={false} />
+            <Header theme='dark' />
             <Main />
             <Footer />
           </Route>
 
-          <Route exact path='/movies'>
-            <Header isLoggedDebug={true}/>
+          <ProtectedRoute exact path='/movies' >
+            <Header />
             <Movies onMoviesCardLike={handleMoviesCardLike} />
             <Footer />
-          </Route>
+          </ProtectedRoute>
 
-          <Route exact path='/saved-movies'>
-            <Header isLoggedDebug={true}/>
+
+          <ProtectedRoute exact path='/saved-movies'>
+            <Header />
             <SavedMovies onMoviesCardLike={handleSavedMoviesCardLike} />
             <Footer />
-          </Route>
+          </ProtectedRoute>
 
-          <Route exact path='/profile'>
-            <Header isLoggedDebug={true}/>
+          <ProtectedRoute exact path='/profile'>
+            <Header />
             <Profile />
-          </Route>
+          </ProtectedRoute>
 
           <Route exact path='/signup'>
             <Register />
           </Route>
 
           <Route exact path='/signin'>
-            <Login />
+            <Login
+              onFail={handleLoginOnFail}
+              onSuccess={handleLoginOnSuccess} />
           </Route>
 
           <Route path='*'>
             <NotFound />
           </Route>
         </Switch>
+
+        {/* success' 'fail' */}
+        <InfoToolTip
+          message={infoToolTipMsg}
+          imgList={imgList}
+          type={infoToolTipType}
+          onClose={handleInfoToolTipClose}
+          autoClose='10000' />
 
         {/* HARDCODE: button to change logged state to check navbar look */}
         {/* <p
@@ -133,7 +192,7 @@ function App() {
           Click here to log {isLogged ? 'OUT' : 'IN'}
         </p> */}
       </div>
-    </AppContext.Provider>
+    </AppContext.Provider >
   );
 }
 

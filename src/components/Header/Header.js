@@ -5,14 +5,14 @@ import Navigation from '../Navigation/Navigation';
 
 import './Header.css';
 
-export default function Header({theme, isLoggedDebug}) {
+export default function Header({ theme }) {
 
   return (
-    <header className={`header ${theme? 'header_theme_'+theme : ''} `}>
+    <header className={`header ${theme ? 'header_theme_' + theme : ''} `}>
       <Link to='/'>
         <div className="header__logo"></div>
       </Link>
-      <Navigation theme={theme} isLoggedDebug={isLoggedDebug}/>
+      <Navigation theme={theme} />
     </header>
   )
 }
