@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from 'yup';
 
 import { AppContext } from '../../contexts/AppContext';
-import * as api from "../../utils/Api";
+import * as api from "../../utils/MainApi";
 
 import './Profile.css';
 

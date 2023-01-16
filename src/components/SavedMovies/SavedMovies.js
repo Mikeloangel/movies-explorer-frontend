@@ -28,6 +28,7 @@ export default function SavedMovies({onMoviesCardLike}) {
         emptyMessageSettings={emptyMessageSettings}
         onCardLikeClick={onMoviesCardLike}
         theme='saved'
+        pagenation={false}
       />
     </main>
   )

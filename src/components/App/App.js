@@ -4,7 +4,7 @@ import { Route, Switch, useHistory } from 'react-router-dom';
 // context
 import { AppContext } from '../../contexts/AppContext';
 
-import * as Api from '../../utils/Api';
+import * as Api from '../../utils/MainApi';
 import './App.css';
 
 // components
@@ -139,8 +139,8 @@ function App() {
       })
   }
 
-  function handleProfileChange(updatedUser, err = null){
-    if(err){
+  function handleProfileChange(updatedUser, err = null) {
+    if (err) {
       setInfoToolTipMsg(err);
       setInfoToolTipType('fail');
       return;

@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 
 import { AppContext } from '../../contexts/AppContext';
-import * as api from "../../utils/Api";
+import * as api from "../../utils/MainApi";
 
 import { useFormik } from "formik";
 import * as Yup from 'yup';

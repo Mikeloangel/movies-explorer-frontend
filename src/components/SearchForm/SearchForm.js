@@ -5,14 +5,14 @@ import './SearchForm.css';
 import imgSearchIco from '../../images/search-ico.png';
 import FilterCheckbox from '../FilterCheckbox/FilterCheckbox';
 
-export default function SearchForm() {
+export default function SearchForm({onSubmit}) {
   function handleCheckboxChange(isChecked) {
     console.log(isChecked);
   }
 
   return (
     <section className='search' aria-label='Поиск любимых фильмов'>
-      <form name='search-form' className='search__form' noValidate>
+      <form name='search-form' className='search__form' noValidate onSubmit={onSubmit}>
         <div className='search__form-wrapper'>
           <img
             src={imgSearchIco}
@@ -42,9 +42,3 @@ export default function SearchForm() {
     </section>
   )
 }
-
-/**
- * SearchForm — форма поиска, куда пользователь будет вводить запрос.
-    *  Обратите внимание на фильтр с чекбоксом «Только короткометражки».
-    *  Для него можно воспользоваться отдельным управляемым компонентом FilterCheckbox.
-    * */
