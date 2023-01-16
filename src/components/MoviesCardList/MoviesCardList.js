@@ -14,6 +14,9 @@ import { Link } from 'react-router-dom';
  *  title - title to show when list is empty
  *  redirect - url to place in link
  *  redirectTitle - link title
+ * @param {onCardLikeClick} function call back to set like for a card
+ * @param {theme} String describes components theme
+ * @param {pagenation} Boolean describes do we need pagination in component
  * @returns JSX
  */
 
@@ -26,8 +29,8 @@ export default function MoviesCardList({ cardList, emptyMessageSettings, onCardL
 
   const gridElementRef = useRef();
 
-  const [page, setPage] = useState(1);
   const [numberOfColumns, setNumberOfColumns] = useState(-1);
+  const [sliceLimiter, setSliceLimiter] = useState(-1);
 
   useEffect(() => {
     if (!gridElementRef.current) {
@@ -55,19 +58,28 @@ export default function MoviesCardList({ cardList, emptyMessageSettings, onCardL
     };
   }, [numberOfColumns, gridElementRef]);
 
-  const loadByNElements = useMemo(() => numberOfColumns > 1 ? numberOfColumns : 5, [numberOfColumns]);
-  const initialNElements = useMemo(() => numberOfColumns >= 3 ? 12 : numberOfColumns === 2 ? 8 : 5, [numberOfColumns]);
-  const sliceLimiter = useMemo(() => page === 1 ? initialNElements : initialNElements + (page - 1) * loadByNElements, [page, initialNElements, loadByNElements]);
+  // initial slice limiter calue
+  useEffect(() => {
+    setSliceLimiter(prev => {
+      return prev === -1 && numberOfColumns > 0 ? (numberOfColumns >= 3 ? 12 : numberOfColumns === 2 ? 8 : 5) : prev;
+    });
+  }, [numberOfColumns]);
+
 
   const outputList = useMemo(() =>
     pagenation ?
-      cardList.slice(0, page * numberOfColumns >= cardList.length ? cardList.length : sliceLimiter) :
+      cardList.slice(0, sliceLimiter) :
       cardList.slice()
-    , [page, cardList, pagenation, numberOfColumns, sliceLimiter]);
+    , [cardList, pagenation, sliceLimiter]);
 
 
   function handleNextPage() {
-    setPage(ppage => ++ppage);
+    setSliceLimiter(prev => {
+      const increment = (numberOfColumns > 1 ? numberOfColumns : 5);
+      // addition needs to calculate missed cards to fill row
+      const addition = numberOfColumns - prev % numberOfColumns === numberOfColumns ? 0 : numberOfColumns - prev % numberOfColumns;
+      return prev + increment + addition;
+    });
   }
 
   const isShowMore = pagenation && sliceLimiter < cardList.length;
@@ -107,8 +119,6 @@ export default function MoviesCardList({ cardList, emptyMessageSettings, onCardL
           </section>
         )
       }
-      <p>Cardlist {cardList.length}</p>
-      <p>outputList {outputList.length}</p>
     </section>
   )
 }
