@@ -27,67 +27,79 @@ export default function MoviesCardList({ cardList, emptyMessageSettings, onCardL
     }
   }
 
+  // we are using ref to determine number of columns in a grid
   const gridElementRef = useRef();
+  const [numberOfColumns, setNumberOfColumns] = useState(4);
+  const [sliceLimiter, setSliceLimiter] = useState(0);
+  const [outputList, setOutputList] = useState([]);
 
-  const [numberOfColumns, setNumberOfColumns] = useState(-1);
-  const [sliceLimiter, setSliceLimiter] = useState(-1);
-
-  useEffect(() => {
+  // calculates real number of columns
+  const calcColumns = useCallback(() => {
     if (!gridElementRef.current) {
-      return;
+      return -1;
     }
 
-    function calcColumns() {
-      const gridComputedStyle = window.getComputedStyle(gridElementRef.current);
-      const nCols = gridComputedStyle
-        .getPropertyValue('grid-template-columns')
-        .replace(' 0px', '')
-        .split(' ')
-        .length;
+    const gridComputedStyle = window.getComputedStyle(gridElementRef.current);
+    const nCols = gridComputedStyle
+      .getPropertyValue('grid-template-columns')
+      .replace(' 0px', '')
+      .split(' ')
+      .length;
 
-      setNumberOfColumns(prevNCols => {
-        return nCols;
-      });
-    }
+    return nCols;
+  }, [])
 
-    calcColumns();
-
-    window.addEventListener('resize', calcColumns);
-    return () => {
-      window.removeEventListener('resize', calcColumns);
-    };
-  }, [numberOfColumns, gridElementRef]);
-
-  // initial slice limiter calue
+  // handles window resize event
   useEffect(() => {
-    setSliceLimiter(prev => {
-      return prev === -1 && numberOfColumns > 0 ? (numberOfColumns >= 3 ? 12 : numberOfColumns === 2 ? 8 : 5) : prev;
-    });
-  }, [numberOfColumns]);
+    let resizeTimer = null;
 
+    function handleResize() {
+      if (!resizeTimer) {
+        resizeTimer = setTimeout(function () {
+          setNumberOfColumns(calcColumns());
+          resizeTimer = null;
+        }, 250);
+      }
+    }
 
-  const outputList = useMemo(() =>
-    pagenation ?
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [numberOfColumns, gridElementRef, calcColumns]);
+
+  // initial slice limiter value
+  useEffect(() => {
+    const nColumns = calcColumns();
+    setNumberOfColumns(nColumns);
+    const initSlicer = nColumns >= 3 ? 12 : nColumns === 2 ? 8 : 5
+    setSliceLimiter(initSlicer);
+  }, [calcColumns]);
+
+  // refreshes output list
+  useEffect(() => {
+    const newSlice = pagenation ?
       cardList.slice(0, sliceLimiter) :
-      cardList.slice()
-    , [cardList, pagenation, sliceLimiter]);
+      cardList.slice();
 
+    setOutputList(newSlice);
+  }, [cardList, sliceLimiter, pagenation]);
 
+  // on click next page
   function handleNextPage() {
-    setSliceLimiter(prev => {
-      const increment = (numberOfColumns > 1 ? numberOfColumns : 5);
-      // addition needs to calculate missed cards to fill row
-      const addition = numberOfColumns - prev % numberOfColumns === numberOfColumns ? 0 : numberOfColumns - prev % numberOfColumns;
-      return prev + increment + addition;
-    });
+    const increment = (numberOfColumns > 1 ? numberOfColumns : 5);
+    // addition needs to calculate missed cards to fill row evenly
+    const addition = numberOfColumns - sliceLimiter % numberOfColumns === numberOfColumns ? 0 : numberOfColumns - sliceLimiter % numberOfColumns;
+    setSliceLimiter(sliceLimiter + increment + addition);
   }
 
-  const isShowMore = pagenation && sliceLimiter < cardList.length;
+  // determines do we need to show more button
+  const isShowMore = pagenation && sliceLimiter < cardList.length && outputList.length > 0;
 
   return (
     <section className='cardlist' aria-label='Список фильмов'>
       {
-        outputList.length === 0 ? (
+        outputList.length === 0 && (
           <section className='cardlist__empty' aria-label='Это все фильмы'>
             <h2 className='cardlist__empty-title'>{emptyMessageSettings?.title || 'Список пуст'}</h2>
             {
@@ -98,18 +110,18 @@ export default function MoviesCardList({ cardList, emptyMessageSettings, onCardL
               )
             }
           </section>
-        ) : (
-          <ul className='cardlist__list' ref={gridElementRef}>
-            {outputList.map((card) => {
-              return (
-                <li key={card.id} className='cardlist__item'>
-                  <MoviesCard {...card} onLikeClick={handleCardLikeClick} theme={theme} />
-                </li>
-              )
-            })}
-          </ul>
         )
       }
+
+      <ul className='cardlist__list' ref={gridElementRef}>
+        {outputList.map((card) => {
+          return (
+            <li key={card.id} className='cardlist__item'>
+              <MoviesCard {...card} onLikeClick={handleCardLikeClick} theme={theme} />
+            </li>
+          )
+        })}
+      </ul>
 
       {
         isShowMore &&

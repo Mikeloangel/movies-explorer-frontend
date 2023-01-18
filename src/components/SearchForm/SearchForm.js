@@ -1,18 +1,38 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 import './SearchForm.css';
 
 import imgSearchIco from '../../images/search-ico.png';
 import FilterCheckbox from '../FilterCheckbox/FilterCheckbox';
 
-export default function SearchForm({onSubmit}) {
+export default function SearchForm({ onSubmit, defaultValues= {} }) {
+  const [queryInput, setQueryInput] = useState('');
+  const [isShortFilm, setIsShortFilm] = useState(false);
+
+  useEffect(() => {
+    setQueryInput(defaultValues.query ?? '');
+  }, [defaultValues])
+
   function handleCheckboxChange(isChecked) {
-    console.log(isChecked);
+    setIsShortFilm(isChecked);
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    onSubmit({
+      query: queryInput,
+      isShortFilm,
+    });
+  }
+
+  function handleInputQueryChange(e) {
+    setQueryInput(e.target.value);
   }
 
   return (
     <section className='search' aria-label='Поиск любимых фильмов'>
-      <form name='search-form' className='search__form' noValidate onSubmit={onSubmit}>
+      <form name='search-form' className='search__form' noValidate onSubmit={handleSubmit}>
         <div className='search__form-wrapper'>
           <img
             src={imgSearchIco}
@@ -28,6 +48,8 @@ export default function SearchForm({onSubmit}) {
             className='search__input'
             required
             placeholder='Фильм'
+            value={queryInput}
+            onChange={handleInputQueryChange}
           />
 
           <button

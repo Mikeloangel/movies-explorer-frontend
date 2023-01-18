@@ -13,6 +13,7 @@ export default function Movies({ onMoviesCardLike }) {
   const [cardListEmptyMessage, setCardListEmptyMessage] = useState({ title: 'Список пуст, начните искать фильмы' });
   const [cardList, setCardList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [defaultFormValues, setDefaultFormValues] = useState({ query: 'п', isShortFilm: true });
 
   function handleCardLikeClick(id) {
     if (typeof onMoviesCardLike === 'function') {
@@ -24,8 +25,16 @@ export default function Movies({ onMoviesCardLike }) {
     setIsLoading(true);
     MoviesApi()
       .then(data => {
-        const filteredList = data.filter(card => card.nameRU.toLowerCase().includes(query.toLowerCase()));
-        setCardList(prev => filteredList);
+        const filteredList = data.filter(card => {
+          // console.log(card.nameRU.toLowerCase());
+          // console.log(query.toLowerCase());
+          // console.log(query);
+          // console.log(card.nameRU.toLowerCase().includes(query.toLowerCase()));
+          return card.nameRU.toLowerCase().includes(query.toLowerCase())
+        });
+        // setCardList(prev => filteredList);
+        setCardList(filteredList);
+        // console.log(filteredList)
         setCardListEmptyMessage({ title: 'Ничего не найдено' });
         localStorage.setItem('movie-list', filteredList)
       })
@@ -33,22 +42,14 @@ export default function Movies({ onMoviesCardLike }) {
         setCardListEmptyMessage({
           title: `Во время запроса произошла ошибка.Возможно, проблема с соединением или сервер недоступен.
         Подождите немного и попробуйте ещё раз`});
-        // setCardList([]);
+
       })
       .finally(() => {
         setIsLoading(false);
       })
   }, []);
 
-  // useEffect(() => {
-  //   loadList();
-  // }, [loadList])
-
-  function handleSubmit(e) {
-    e.preventDefault();
-
-    const query = e.target.elements['film'].value;
-    const isShortFilm = e.target.elements['filter_def'].value;
+  function handleSubmit({ query, isShortFilm }) {
     if (query.trim().length === 0) {
       setCardListEmptyMessage({ title: 'Нужно ввести ключевое слово' });
       setCardList([]);
@@ -63,7 +64,10 @@ export default function Movies({ onMoviesCardLike }) {
 
   return (
     <main className='movies'>
-      <SearchForm onSubmit={handleSubmit} />
+      <SearchForm
+        onSubmit={handleSubmit}
+        defaultValues={defaultFormValues}
+      />
       {isLoading ?
         (<Preloader />) :
         (<MoviesCardList
