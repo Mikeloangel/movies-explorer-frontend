@@ -2,15 +2,7 @@ import React, { useState } from 'react';
 
 import './FilterCheckbox.css';
 
-export default function FilterCheckbox({ label, id = 'def', isDisabled, onChange }) {
-  const [isChecked, setIsChecked] = useState(false);
-
-  function handleCheck() {
-    setIsChecked((prev) => {
-      if (typeof onChange === 'function') onChange(!prev);
-      return !prev
-    });
-  }
+export default function FilterCheckbox({ label, id = 'def', isDisabled, onChange, checked }) {
 
   return (
     <div className='filterbox'>
@@ -23,14 +15,14 @@ export default function FilterCheckbox({ label, id = 'def', isDisabled, onChange
           id={`filter_${id}`}
           name={`filter_${id}`}
           className='filterbox__check'
-          value={isChecked}
-          onChange={handleCheck}
+          defaultChecked={checked}
+          onChange={onChange}
           disabled={isDisabled}
         />
         <span
           className='filterbox__background'
           role='checkbox'
-          aria-checked={isChecked}
+          aria-checked={checked}
           aria-labelledby={`filter_${id}`}
         >
           <span className='filterbox__eyeball'></span>

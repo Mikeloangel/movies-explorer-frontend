@@ -5,29 +5,33 @@ import './SearchForm.css';
 import imgSearchIco from '../../images/search-ico.png';
 import FilterCheckbox from '../FilterCheckbox/FilterCheckbox';
 
-export default function SearchForm({ onSubmit, defaultValues= {} }) {
-  const [queryInput, setQueryInput] = useState('');
-  const [isShortFilm, setIsShortFilm] = useState(false);
-
-  useEffect(() => {
-    setQueryInput(defaultValues.query ?? '');
-  }, [defaultValues])
-
-  function handleCheckboxChange(isChecked) {
-    setIsShortFilm(isChecked);
-  }
+export default function SearchForm({ onSubmit, defaultValues = {}, onChange }) {
+  const [queryInput, setQueryInput] = useState(defaultValues.query);
+  const [isShortFilm, setIsShortFilm] = useState(defaultValues.isShortFilm);
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    onSubmit({
-      query: queryInput,
-      isShortFilm,
-    });
+    if (typeof onSubmit === 'function') {
+      onSubmit({
+        query: queryInput,
+        isShortFilm,
+      });
+    }
   }
 
   function handleInputQueryChange(e) {
     setQueryInput(e.target.value);
+    if (typeof onChange === 'function') {
+      onChange(e);
+    }
+  }
+
+  function handleCheckedChange(e) {
+    setIsShortFilm(!isShortFilm);
+    if (typeof onChange === 'function') {
+      onChange(e);
+    }
   }
 
   return (
@@ -59,7 +63,12 @@ export default function SearchForm({ onSubmit, defaultValues= {} }) {
           </button>
         </div>
 
-        <FilterCheckbox label='Короткометражки' isDisabled={false} onChange={handleCheckboxChange} />
+        <FilterCheckbox
+          label='Короткометражки'
+          isDisabled={false}
+          checked={isShortFilm}
+          onChange={handleCheckedChange} />
+
       </form>
     </section>
   )

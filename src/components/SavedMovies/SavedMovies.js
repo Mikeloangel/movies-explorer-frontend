@@ -11,7 +11,7 @@ export default function SavedMovies({onMoviesCardLike}) {
   const { cardList } = useContext(AppContext);
 
   // const filteredList useMemo()
-  const filteredList = cardList.filter((e) => e.like);
+  const filteredList = [];
 
   const emptyMessageSettings = {
     title: 'Вы пока не полюбили ни одного фильма',

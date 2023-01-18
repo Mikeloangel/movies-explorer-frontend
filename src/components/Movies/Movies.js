@@ -11,9 +11,16 @@ import Preloader from '../Preloader/Preloader';
 export default function Movies({ onMoviesCardLike }) {
   // const { cardList } = useContext(AppContext);
   const [cardListEmptyMessage, setCardListEmptyMessage] = useState({ title: 'Список пуст, начните искать фильмы' });
-  const [cardList, setCardList] = useState([]);
+  const [cardList, setCardList] = useState(
+    localStorage.getItem('movie-list') && localStorage.getItem('movie-query') ?
+    localStorage.getItem('movie-query').trim().length !==0 ? JSON.parse(localStorage.getItem('movie-list')) : [] :
+      []
+  );
   const [isLoading, setIsLoading] = useState(false);
-  const [defaultFormValues, setDefaultFormValues] = useState({ query: 'п', isShortFilm: true });
+  const [defaultFormValues, setDefaultFormValues] = useState({
+    query: localStorage.getItem('movie-query') || '',
+    isShortFilm: localStorage.getItem('movie-shortfilm') === 'true' ? true : false,
+  });
 
   function handleCardLikeClick(id) {
     if (typeof onMoviesCardLike === 'function') {
@@ -21,22 +28,16 @@ export default function Movies({ onMoviesCardLike }) {
     }
   }
 
-  const loadList = useCallback((query) => {
+  const loadList = useCallback((query, isShortFilm) => {
     setIsLoading(true);
     MoviesApi()
       .then(data => {
         const filteredList = data.filter(card => {
-          // console.log(card.nameRU.toLowerCase());
-          // console.log(query.toLowerCase());
-          // console.log(query);
-          // console.log(card.nameRU.toLowerCase().includes(query.toLowerCase()));
           return card.nameRU.toLowerCase().includes(query.toLowerCase())
         });
-        // setCardList(prev => filteredList);
         setCardList(filteredList);
-        // console.log(filteredList)
         setCardListEmptyMessage({ title: 'Ничего не найдено' });
-        localStorage.setItem('movie-list', filteredList)
+        localStorage.setItem('movie-list', JSON.stringify(filteredList));
       })
       .catch(errMsg => {
         setCardListEmptyMessage({
@@ -56,10 +57,18 @@ export default function Movies({ onMoviesCardLike }) {
       return;
     }
 
-    loadList(query);
+    loadList(query, isShortFilm);
+  }
 
-    localStorage.setItem('movie-query', query);
-    localStorage.setItem('movie-shortfilm', isShortFilm);
+  function handleFormChange(e) {
+    if (e.target.name === 'film') {
+      localStorage.setItem('movie-query', e.target.value);
+      return;
+    }
+
+    if (e.target.name === 'filter_def') {
+      localStorage.setItem('movie-shortfilm', e.target.checked);
+    }
   }
 
   return (
@@ -67,6 +76,7 @@ export default function Movies({ onMoviesCardLike }) {
       <SearchForm
         onSubmit={handleSubmit}
         defaultValues={defaultFormValues}
+        onChange={handleFormChange}
       />
       {isLoading ?
         (<Preloader />) :
