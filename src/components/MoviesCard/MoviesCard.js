@@ -13,6 +13,7 @@ export default function MoviesCard({
   theme,
   baseUrl
 }) {
+
   function handleLikeClick() {
     if (typeof onLikeClick === 'function') {
       onLikeClick(id);

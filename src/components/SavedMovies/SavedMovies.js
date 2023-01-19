@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import SearchForm from '../SearchForm/SearchForm';
@@ -9,6 +9,18 @@ import './SavedMovies.css';
 
 export default function SavedMovies({ onMoviesCardLike }) {
   const { savedCardList } = useContext(AppContext);
+
+  const [filteredCardList, setFilteredCardList] = useState([]);
+
+  function handleSavedMovieCardLike(card) {
+    if (typeof onMoviesCardLike === 'function') {
+      onMoviesCardLike(card);
+    };
+  }
+
+  useEffect(() => {
+    setFilteredCardList(savedCardList);
+  }, [savedCardList])
 
   const emptyMessageSettings = {
     title: 'Вы пока не полюбили ни одного фильма',
@@ -25,13 +37,24 @@ export default function SavedMovies({ onMoviesCardLike }) {
     }
   }
 
+  function handleSubmit({ query, isShortFilm }) {
+    setFilteredCardList(() => {
+      return savedCardList.filter(card => {
+        return card.nameRU.toLowerCase().includes(query.toLowerCase())
+      });
+    })
+  }
+
   return (
     <main className='saved-movies'>
-      <SearchForm />
+      <SearchForm
+        onSubmit={handleSubmit}
+      />
+
       <MoviesCardList
-        cardList={savedCardList}
+        cardList={filteredCardList}
         emptyMessageSettings={emptyMessageSettings}
-        onCardLikeClick={onMoviesCardLike}
+        onCardLikeClick={handleSavedMovieCardLike}
         theme='saved'
         pagenation={false}
         cardListFields={moviesFieldsSettings}

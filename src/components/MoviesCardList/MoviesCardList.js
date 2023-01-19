@@ -29,7 +29,7 @@ import { Link } from 'react-router-dom';
 export default function MoviesCardList({ cardList, emptyMessageSettings, onCardLikeClick, theme, pagenation, cardListFields }) {
   function handleCardLikeClick(id) {
     if (typeof onCardLikeClick === 'function') {
-      onCardLikeClick(id);
+      onCardLikeClick(cardList.find(card => card[cardListFields.id] === id));
     }
   }
 
@@ -101,7 +101,6 @@ export default function MoviesCardList({ cardList, emptyMessageSettings, onCardL
 
   // determines do we need to show more button
   const isShowMore = pagenation && sliceLimiter < cardList.length && outputList.length > 0;
-
 
   // HARDCODE move to helper / utils
   function translateObjectFieldByPath(object, path) {

@@ -10,7 +10,7 @@ import './Movies.css';
 import Preloader from '../Preloader/Preloader';
 
 export default function Movies({ onMoviesCardLike }) {
-  const { savedCardList } = useContext(AppContext);
+  const { savedCardList, isSavedCardListReady } = useContext(AppContext);
   const [cardListEmptyMessage, setCardListEmptyMessage] = useState({ title: 'Список пуст, начните искать фильмы' });
   const [movieList, setMovieList] = useState(
     localStorage.getItem('movie-list') && localStorage.getItem('movie-query') ?
@@ -23,13 +23,11 @@ export default function Movies({ onMoviesCardLike }) {
     isShortFilm: localStorage.getItem('movie-shortfilm') === 'true' ? true : false,
   });
 
-  function handleCardLikeClick(id) {
-    if (typeof onMoviesCardLike === 'function') {
-      onMoviesCardLike(id);
-    }
-  }
-
   const loadList = useCallback((query, isShortFilm) => {
+    if (!query) {
+      return;
+    }
+
     setIsLoading(true);
     MoviesApi()
       .then(data => {
@@ -44,7 +42,7 @@ export default function Movies({ onMoviesCardLike }) {
         setCardListEmptyMessage({ title: 'Ничего не найдено' });
         localStorage.setItem('movie-list', JSON.stringify(filteredList));
       })
-      .catch(errMsg => {
+      .catch(() => {
         setCardListEmptyMessage({
           title: `Во время запроса произошла ошибка.Возможно, проблема с соединением или сервер недоступен.
         Подождите немного и попробуйте ещё раз`});
@@ -54,6 +52,11 @@ export default function Movies({ onMoviesCardLike }) {
         setIsLoading(false);
       });
   }, [savedCardList]);
+
+
+  useEffect(() => {
+    loadList(localStorage.getItem('movie-query') || null, localStorage.getItem('movie-shortfilm') || false);
+  }, [isSavedCardListReady])
 
   function handleSubmit({ query, isShortFilm }) {
     if (query.trim().length === 0) {
@@ -73,6 +76,17 @@ export default function Movies({ onMoviesCardLike }) {
 
     if (e.target.name === 'filter_def') {
       localStorage.setItem('movie-shortfilm', e.target.checked);
+    }
+  }
+
+  function handleCardLikeClick(card) {
+    if (typeof onMoviesCardLike === 'function') {
+      onMoviesCardLike(card, (id, isLiked) => {
+        setMovieList(prev => prev.map(movie => {
+          movie.id === id && (movie.like = isLiked);
+          return movie;
+        }));
+      });
     }
   }
 

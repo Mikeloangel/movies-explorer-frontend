@@ -111,7 +111,7 @@ export const patchUserMe = async (name, email) => {
       'Content-Type': 'application/json',
     },
     'include'
-    );
+  );
 
   if (res.status === 200) {
     return res.json();
@@ -132,7 +132,49 @@ export const getSavedCards = async () => {
       'Content-Type': 'application/json',
     },
     'include'
-    );
+  );
+
+  if (res.status === 200) {
+    return res.json();
+  }
+
+  const errorMessage = await parseErrorMessage(res, 'message');
+  return Promise.reject(errorMessage);
+}
+
+// add movie to like
+export const postMovie = async (newCard) => {
+  const res = await fetchApi(
+    'movies',
+    'post',
+    newCard,
+    {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    'include'
+  );
+
+  if (res.status === 201) {
+    return res.json();
+  }
+
+  const errorMessage = await parseErrorMessage(res, 'message');
+  return Promise.reject(errorMessage);
+}
+
+// add movie to like
+export const deleteMovie = async (movieId) => {
+  const res = await fetchApi(
+    `movies/${movieId}`,
+    'delete',
+    null,
+    {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    'include'
+  );
 
   if (res.status === 200) {
     return res.json();

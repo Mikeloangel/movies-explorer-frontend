@@ -34,6 +34,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
 
   const [savedCardList, setSavedCardList] = useState([]);
+  const [isSavedCardListReady, setIsSavedCardListReady] = useState(false);
 
   const [infoToolTipType, setInfoToolTipType] = useState('hidden');
   const [infoToolTipMsg, setInfoToolTipMsg] = useState('');
@@ -45,6 +46,7 @@ function App() {
       Api.getSavedCards()
         .then(cards => {
           setSavedCardList(cards);
+          setIsSavedCardListReady(true);
         })
         .catch(() => {
           setInfoToolTipMsg('Не удалось загрузить сохраненные фильмы.');
@@ -52,23 +54,59 @@ function App() {
         });
     } else {
       setSavedCardList([]);
+      setIsSavedCardListReady(false);
     }
   }, [isLogged]);
 
-  // HARDCODE
-  function handleMoviesCardLike(id) {
-    // const cardLiked = savedCardList.find(card => card.id === id);
+  function handleMoviesCardLike(card, cb) {
+    const baseUrl = 'https://api.nomoreparties.co';
+    const movie = savedCardList.find(savedCard => savedCard.movieId === card.id)
+    if (movie) {
+      // then delete
+      Api.deleteMovie(movie._id)
+        .then(() => {
+          setSavedCardList(prev => prev.filter(item => item.movieId !== movie.movieId));
+          cb(movie.movieId, false);
+        })
+        .catch(errMsg => {
+          setInfoToolTipMsg('Ошибка удаления лайка.' + errMsg);
+          setInfoToolTipType('fail');
+        });
+    } else {
+      // else add
+      Api.postMovie({
+        country: card.country,
+        director: card.director,
+        duration: card.duration,
+        year: card.year.toString(),
+        description: card.description,
+        image: baseUrl + card.image.url,
+        trailerLink: card.trailerLink,
+        thumbnail: baseUrl + card.image.formats.thumbnail.url,
+        movieId: card.id,
+        nameRU: card.nameRU,
+        nameEN: card.nameEN
+      })
+        .then(updatedCard => {
+          setSavedCardList(prev => [updatedCard, ...prev]);
+          cb(updatedCard.movieId, true);
+        })
+        .catch(errMsg => {
+          setInfoToolTipMsg('Ошибка добавления лайка.' + errMsg);
+          setInfoToolTipType('fail');
+        });
+    }
   }
 
-  function handleSavedMoviesCardLike(id) {
-    // HARDCODE
-    setSavedCardList(
-      savedCardList.map((item) => {
-        if (item.id === id) {
-          item.like = !item.like;
-        }
-        return item;
-      }));
+  function handleSavedMoviesCardLike(card) {
+    Api.deleteMovie(card._id)
+      .then(() => {
+        setSavedCardList(prev => prev.filter(item => item.movieId !== card.movieId));
+      })
+      .catch((errMsg) => {
+        setInfoToolTipMsg('Ошибка удаления лайка.' + errMsg);
+        setInfoToolTipType('fail');
+      });
   }
 
 
@@ -148,7 +186,7 @@ function App() {
   }
 
   return (
-    <AppContext.Provider value={{ isLogged, currentUser, savedCardList }}>
+    <AppContext.Provider value={{ isLogged, currentUser, savedCardList, isSavedCardListReady }}>
       <div className="app">
         {
           isAppReady ?

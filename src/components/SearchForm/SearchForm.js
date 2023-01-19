@@ -6,8 +6,8 @@ import imgSearchIco from '../../images/search-ico.png';
 import FilterCheckbox from '../FilterCheckbox/FilterCheckbox';
 
 export default function SearchForm({ onSubmit, defaultValues = {}, onChange }) {
-  const [queryInput, setQueryInput] = useState(defaultValues.query);
-  const [isShortFilm, setIsShortFilm] = useState(defaultValues.isShortFilm);
+  const [queryInput, setQueryInput] = useState(defaultValues.query || '');
+  const [isShortFilm, setIsShortFilm] = useState(defaultValues.isShortFilm || 'false');
 
   function handleSubmit(e) {
     e.preventDefault();
