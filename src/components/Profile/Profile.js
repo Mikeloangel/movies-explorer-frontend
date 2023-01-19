@@ -37,14 +37,12 @@ export default function Profile({ onLogout, onChange }) {
         })
         .catch(errorMsg => {
           onChange(null, errorMsg);
-          console.log(errorMsg);
         })
         .finally(() => {
           setIsSubmittingForm(false);
         });
     }
   });
-
 
   return (
     <main className='profile'>

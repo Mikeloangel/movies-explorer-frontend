@@ -7,11 +7,8 @@ import { AppContext } from '../../contexts/AppContext';
 
 import './SavedMovies.css';
 
-export default function SavedMovies({onMoviesCardLike}) {
-  const { cardList } = useContext(AppContext);
-
-  // const filteredList useMemo()
-  const filteredList = [];
+export default function SavedMovies({ onMoviesCardLike }) {
+  const { savedCardList } = useContext(AppContext);
 
   const emptyMessageSettings = {
     title: 'Вы пока не полюбили ни одного фильма',
@@ -19,16 +16,25 @@ export default function SavedMovies({onMoviesCardLike}) {
     redirectTitle: 'Полюбить фильмы можно тут'
   }
 
+  const moviesFieldsSettings = {
+    id: 'movieId',
+    baseUrl: '',
+    mainImgPath: 'image',
+    imgFormats: {
+      'thumbnail': 'thumbnail',
+    }
+  }
+
   return (
     <main className='saved-movies'>
       <SearchForm />
-
       <MoviesCardList
-        cardList={filteredList}
+        cardList={savedCardList}
         emptyMessageSettings={emptyMessageSettings}
         onCardLikeClick={onMoviesCardLike}
         theme='saved'
         pagenation={false}
+        cardListFields={moviesFieldsSettings}
       />
     </main>
   )

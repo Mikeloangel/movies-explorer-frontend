@@ -34,13 +34,11 @@ export default function Login({ onSuccess, onFail }) {
 
       api.authorization(values.email, values.password)
         .then(msg => {
-          console.log(msg);
           onSuccess(msg);
         })
         .catch(errorMsg => {
           onFail(errorMsg);
           setIsSubmittingForm(false);
-          console.log(errorMsg);
         })
     }
   });

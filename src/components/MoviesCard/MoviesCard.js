@@ -2,10 +2,17 @@ import React, { useMemo } from 'react';
 
 import './MoviesCard.css';
 
-export default function MoviesCard({ id, nameRU, trailerLink, image, like = false, duration, onLikeClick, theme }) {
-  // HARDCODE base url
-  const baseURL = 'https://api.nomoreparties.co';
-
+export default function MoviesCard({
+  id,
+  nameRU, trailerLink,
+  imgUrl, imgName,
+  imgThumbnailUrl, imgLargeUrl, imgMediumUrl, imgSmallUrl,
+  like = false,
+  duration,
+  onLikeClick,
+  theme,
+  baseUrl
+}) {
   function handleLikeClick() {
     if (typeof onLikeClick === 'function') {
       onLikeClick(id);
@@ -27,11 +34,11 @@ export default function MoviesCard({ id, nameRU, trailerLink, image, like = fals
           target='_blank'
         >
           <picture className='card__picture'>
-            <source media="(min-width:1000px)" srcSet={baseURL + image.formats.thumbnail.url} />
-            {image.formats.large && (<source media="(min-width:825px)" srcSet={baseURL + image.formats.large.url} />)}
-            {image.formats.medium && (<source media="(min-width:625px)" srcSet={baseURL + image.formats.medium.url} />)}
-            {image.formats.small && (<source media="(min-width:425px)" srcSet={baseURL + image.formats.small.url} />)}
-            <img src={baseURL + image.url} alt={image.name} className='card__img' />
+            {imgThumbnailUrl && (<source media="(min-width:1000px)" srcSet={baseUrl + imgThumbnailUrl} />)}
+            {imgLargeUrl && (<source media="(min-width:825px)" srcSet={baseUrl + imgLargeUrl} />)}
+            {imgMediumUrl && (<source media="(min-width:625px)" srcSet={baseUrl + imgMediumUrl} />)}
+            {imgSmallUrl && (<source media="(min-width:425px)" srcSet={baseUrl + imgSmallUrl} />)}
+            <img src={baseUrl + imgUrl} alt={imgName} className='card__img' />
           </picture>
         </a>
         <figcaption className='card__figcapture' title={nameRU}>

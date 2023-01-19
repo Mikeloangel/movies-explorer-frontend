@@ -2,22 +2,23 @@ import React, { useContext, useState, useEffect, useCallback } from 'react';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import SearchForm from '../SearchForm/SearchForm';
 
-// import { AppContext } from '../../contexts/AppContext';
+import { AppContext } from '../../contexts/AppContext';
 import { MoviesApi } from '../../utils/MoviesApi';
+
 
 import './Movies.css';
 import Preloader from '../Preloader/Preloader';
 
 export default function Movies({ onMoviesCardLike }) {
-  // const { cardList } = useContext(AppContext);
+  const { savedCardList } = useContext(AppContext);
   const [cardListEmptyMessage, setCardListEmptyMessage] = useState({ title: 'Список пуст, начните искать фильмы' });
-  const [cardList, setCardList] = useState(
+  const [movieList, setMovieList] = useState(
     localStorage.getItem('movie-list') && localStorage.getItem('movie-query') ?
-    localStorage.getItem('movie-query').trim().length !==0 ? JSON.parse(localStorage.getItem('movie-list')) : [] :
+      localStorage.getItem('movie-query').trim().length !== 0 ? JSON.parse(localStorage.getItem('movie-list')) : [] :
       []
   );
   const [isLoading, setIsLoading] = useState(false);
-  const [defaultFormValues, setDefaultFormValues] = useState({
+  const [defaultFormValues] = useState({
     query: localStorage.getItem('movie-query') || '',
     isShortFilm: localStorage.getItem('movie-shortfilm') === 'true' ? true : false,
   });
@@ -35,7 +36,11 @@ export default function Movies({ onMoviesCardLike }) {
         const filteredList = data.filter(card => {
           return card.nameRU.toLowerCase().includes(query.toLowerCase())
         });
-        setCardList(filteredList);
+        // sets filtered list and adds likes field
+        setMovieList(filteredList.map(movie => {
+          movie.like = savedCardList.some(c => c.movieId === movie.id);
+          return movie;
+        }));
         setCardListEmptyMessage({ title: 'Ничего не найдено' });
         localStorage.setItem('movie-list', JSON.stringify(filteredList));
       })
@@ -47,13 +52,13 @@ export default function Movies({ onMoviesCardLike }) {
       })
       .finally(() => {
         setIsLoading(false);
-      })
-  }, []);
+      });
+  }, [savedCardList]);
 
   function handleSubmit({ query, isShortFilm }) {
     if (query.trim().length === 0) {
       setCardListEmptyMessage({ title: 'Нужно ввести ключевое слово' });
-      setCardList([]);
+      setMovieList([]);
       return;
     }
 
@@ -71,6 +76,18 @@ export default function Movies({ onMoviesCardLike }) {
     }
   }
 
+  const moviesFieldsSettings = {
+    id: 'id',
+    baseUrl: 'https://api.nomoreparties.co',
+    mainImgPath: 'image.url',
+    imgFormats: {
+      'thumbnail': 'image.formats.thumbnail.url',
+      'large': 'image.formats.large.url',
+      'medium': 'image.formats.medium.url',
+      'small': 'image.formats.small.url',
+    },
+  }
+
   return (
     <main className='movies'>
       <SearchForm
@@ -81,10 +98,11 @@ export default function Movies({ onMoviesCardLike }) {
       {isLoading ?
         (<Preloader />) :
         (<MoviesCardList
-          cardList={cardList}
+          cardList={movieList}
           onCardLikeClick={handleCardLikeClick}
           emptyMessageSettings={cardListEmptyMessage}
           pagenation={true}
+          cardListFields={moviesFieldsSettings}
         />)
       }
 

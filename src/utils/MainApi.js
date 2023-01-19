@@ -120,3 +120,24 @@ export const patchUserMe = async (name, email) => {
   const errorMessage = await parseErrorMessage(res, 'message');
   return Promise.reject(errorMessage);
 }
+
+// edit user
+export const getSavedCards = async () => {
+  const res = await fetchApi(
+    'movies',
+    'get',
+    null,
+    {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    'include'
+    );
+
+  if (res.status === 200) {
+    return res.json();
+  }
+
+  const errorMessage = await parseErrorMessage(res, 'message');
+  return Promise.reject(errorMessage);
+}

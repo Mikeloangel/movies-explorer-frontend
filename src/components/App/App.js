@@ -33,52 +33,37 @@ function App() {
   const [isLogged, setIsLogged] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
 
-  const [cardList, setCardList] = useState([]);
-  const [isCardListReady, setIsCardListReady] = useState(false);
+  const [savedCardList, setSavedCardList] = useState([]);
 
   const [infoToolTipType, setInfoToolTipType] = useState('hidden');
   const [infoToolTipMsg, setInfoToolTipMsg] = useState('');
   const imgList = { 'success': imgSuccess, 'fail': imgFail };
 
-  // HARDCODE: loads some data from API
+  // recieves users list of liked film
   useEffect(() => {
     if (isLogged) {
-      fetch('https://api.nomoreparties.co/beatfilm-movies',
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
+      Api.getSavedCards()
+        .then(cards => {
+          setSavedCardList(cards);
         })
-        .then(res => res.json())
-        .then(data => {
-          setIsCardListReady(true);
-          data[0].like = true;
-          data[3].like = true;
-          data[5].like = true;
-          setCardList(data.slice(0, 16));
+        .catch(() => {
+          setInfoToolTipMsg('Не удалось загрузить сохраненные фильмы.');
+          setInfoToolTipType('fail');
         });
     } else {
-      setIsCardListReady(false);
-      setCardList([]);
+      setSavedCardList([]);
     }
   }, [isLogged]);
 
+  // HARDCODE
   function handleMoviesCardLike(id) {
-    // HARDCODE
-    setCardList(
-      cardList.map((item) => {
-        if (item.id === id) {
-          item.like = !item.like;
-        }
-        return item;
-      }));
+    // const cardLiked = savedCardList.find(card => card.id === id);
   }
 
   function handleSavedMoviesCardLike(id) {
     // HARDCODE
-    setCardList(
-      cardList.map((item) => {
+    setSavedCardList(
+      savedCardList.map((item) => {
         if (item.id === id) {
           item.like = !item.like;
         }
@@ -163,7 +148,7 @@ function App() {
   }
 
   return (
-    <AppContext.Provider value={{ isLogged, currentUser, isCardListReady, cardList }}>
+    <AppContext.Provider value={{ isLogged, currentUser, savedCardList }}>
       <div className="app">
         {
           isAppReady ?

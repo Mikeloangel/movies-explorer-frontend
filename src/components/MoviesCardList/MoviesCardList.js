@@ -20,7 +20,13 @@ import { Link } from 'react-router-dom';
  * @returns JSX
  */
 
-export default function MoviesCardList({ cardList, emptyMessageSettings, onCardLikeClick, theme, pagenation }) {
+/**
+ * cardListFields {
+ *  id: 'id' || 'movieId'
+ * }
+ */
+
+export default function MoviesCardList({ cardList, emptyMessageSettings, onCardLikeClick, theme, pagenation, cardListFields }) {
   function handleCardLikeClick(id) {
     if (typeof onCardLikeClick === 'function') {
       onCardLikeClick(id);
@@ -96,6 +102,26 @@ export default function MoviesCardList({ cardList, emptyMessageSettings, onCardL
   // determines do we need to show more button
   const isShowMore = pagenation && sliceLimiter < cardList.length && outputList.length > 0;
 
+
+  // HARDCODE move to helper / utils
+  function translateObjectFieldByPath(object, path) {
+    if (!path) {
+      return undefined;
+    }
+    const route = path.split('.');
+    let res = object;
+
+    for (let current of route) {
+      if (res[current]) {
+        res = res[current];
+      } else {
+        return undefined;
+      }
+    }
+
+    return res;
+  }
+
   return (
     <section className='cardlist' aria-label='Список фильмов'>
       {
@@ -116,8 +142,24 @@ export default function MoviesCardList({ cardList, emptyMessageSettings, onCardL
       <ul className='cardlist__list' ref={gridElementRef}>
         {outputList.map((card) => {
           return (
-            <li key={card.id} className='cardlist__item'>
-              <MoviesCard {...card} onLikeClick={handleCardLikeClick} theme={theme} />
+            <li key={card[cardListFields.id]} className='cardlist__item'>
+              <MoviesCard
+                // {...card}
+                onLikeClick={handleCardLikeClick}
+                theme={theme}
+                id={card[cardListFields.id]}
+                like={card.like}
+                nameRU={card.nameRU}
+                duration={card.duration}
+                trailerLink={card.trailerLink}
+                baseUrl={cardListFields.baseUrl}
+                imgName={card.nameRU}
+                imgUrl={translateObjectFieldByPath(card, cardListFields.mainImgPath)}
+                imgThumbnailUrl={translateObjectFieldByPath(card, cardListFields.imgFormats.thumbnail)}
+                imgLargeUrl={translateObjectFieldByPath(card, cardListFields.imgFormats.large)}
+                imgMediumUrl={translateObjectFieldByPath(card, cardListFields.imgFormats.medium)}
+                imgSmallUrl={translateObjectFieldByPath(card, cardListFields.imgFormats.small)}
+              />
             </li>
           )
         })}

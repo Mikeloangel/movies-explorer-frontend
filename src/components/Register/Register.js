@@ -39,13 +39,11 @@ export default function Register({ onFail, onSuccess }) {
       setIsSubmittingForm(true);
       api.register(values.name, values.email, values.password)
         .then(msg => {
-          console.log(msg);
           onSuccess(msg);
         })
         .catch(errorMsg => {
           onFail(errorMsg);
           setIsSubmittingForm(false);
-          console.log(errorMsg);
         })
     }
   });
