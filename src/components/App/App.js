@@ -217,8 +217,7 @@ function App() {
         setInfoToolTipType('fail');
         setIsCardListReady(false);
         setCardList([]);
-      })
-      .finally(cb());
+      });
   }
 
   return (
