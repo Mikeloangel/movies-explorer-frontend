@@ -86,3 +86,8 @@
     background: var(--brand-color);
     animation: preloader-inside-red 1s ease-in-out infinite;
 }
+
+.preloader_theme_fullscreen {
+  min-height: 100vh;
+  box-sizing: border-box;
+}

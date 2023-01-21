@@ -16,6 +16,8 @@ export default function Register({ onFail, onSuccess }) {
 
   // formik form validation logics
   const formik = useFormik({
+    validateOnChange: true,
+    validateOnBlur: false,
     initialValues: {
       email: '',
       name: '',
@@ -28,6 +30,7 @@ export default function Register({ onFail, onSuccess }) {
         .required('Электропочта обязательна'),
       name: Yup
         .string()
+        .matches(/^[a-zA-Zа-яА-Я\s/-/-/–]*$/, 'Имя может содержать только латиницу, кириллицу, пробел или дефис.')
         .min(2, 'Имя - минимум 2 символа')
         .max(30, 'Имя - максимум 30 символов')
         .required('Имя – обязательное поле'),
@@ -39,7 +42,7 @@ export default function Register({ onFail, onSuccess }) {
       setIsSubmittingForm(true);
       api.register(values.name, values.email, values.password)
         .then(msg => {
-          onSuccess(msg);
+          onSuccess(values, msg);
         })
         .catch(errorMsg => {
           onFail(errorMsg);
@@ -47,6 +50,8 @@ export default function Register({ onFail, onSuccess }) {
         })
     }
   });
+
+  console.log(formik);
 
   return isLogged ?
     (<Redirect to='/' />) :
@@ -63,7 +68,8 @@ export default function Register({ onFail, onSuccess }) {
             Имя
           </label>
           <input
-            className={`auth__input ${formik.touched.name && formik.errors.name && 'auth__input_invalid'}`}
+            className={`auth__input ${formik.errors.name && 'auth__input_invalid'}`}
+            // className={`auth__input ${formik.errors.name && formik.touched.name && 'auth__input_invalid'}`}
             name='name'
             id='name'
             type='text'
@@ -75,7 +81,8 @@ export default function Register({ onFail, onSuccess }) {
             onBlur={formik.handleBlur}
           />
           <p className='auth__error-message'>
-            {formik.touched.name && formik.errors.name}
+            {/* {formik.touched.name && formik.errors.name} */}
+            {formik.errors.name}
           </p>
 
           <label
@@ -84,7 +91,8 @@ export default function Register({ onFail, onSuccess }) {
             E-mail
           </label>
           <input
-            className={`auth__input ${formik.touched.email && formik.errors.email && 'auth__input_invalid'}`}
+            // className={`auth__input ${formik.errors.email && formik.touched.email && 'auth__input_invalid'}`}
+            className={`auth__input ${formik.errors.email && 'auth__input_invalid'}`}
             name='email'
             id='email'
             type='email'
@@ -94,7 +102,8 @@ export default function Register({ onFail, onSuccess }) {
             onBlur={formik.handleBlur}
           />
           <p className='auth__error-message'>
-            {formik.touched.email && formik.errors.email}
+            {formik.errors.email}
+            {/* {formik.touched.email && formik.errors.email} */}
           </p>
 
           <label
@@ -103,7 +112,8 @@ export default function Register({ onFail, onSuccess }) {
             Пароль
           </label>
           <input
-            className={`auth__input ${formik.touched.password && formik.errors.password && 'auth__input_invalid'}`}
+            className={`auth__input ${formik.errors.password && 'auth__input_invalid'}`}
+            // className={`auth__input ${formik.errors.password && formik.touched.password && 'auth__input_invalid'}`}
             name='password'
             id='password'
             type='password'
@@ -113,7 +123,8 @@ export default function Register({ onFail, onSuccess }) {
             onBlur={formik.handleBlur}
           />
           <p className='auth__error-message'>
-            {formik.touched.password && formik.errors.password}
+            {formik.errors.password}
+            {/* {formik.touched.password && formik.errors.password} */}
           </p>
 
           <div className='auth__button-wrapper'>

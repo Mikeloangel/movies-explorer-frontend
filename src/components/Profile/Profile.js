@@ -27,7 +27,8 @@ export default function Profile({ onLogout, onChange }) {
         .string()
         .min(2, 'Имя - минимум 2 символа')
         .max(30, 'Имя - максимум 30 символов')
-        .required('Имя – обязательное поле'),
+        .required('Имя – обязательное поле')
+        .matches(/^[a-zA-Zа-яА-Я\s/-/-/–]*$/, 'Только латиница, кириллица, пробел или дефис.'),
     }),
     onSubmit: (values) => {
       setIsSubmittingForm(true);

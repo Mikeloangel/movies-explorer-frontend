@@ -5,13 +5,14 @@ import SearchForm from '../SearchForm/SearchForm';
 import { AppContext } from '../../contexts/AppContext';
 import { MoviesApi } from '../../utils/MoviesApi';
 
-
 import './Movies.css';
 import Preloader from '../Preloader/Preloader';
 
 export default function Movies({ onMoviesCardLike }) {
   const { savedCardList, isSavedCardListReady } = useContext(AppContext);
+
   const [cardListEmptyMessage, setCardListEmptyMessage] = useState({ title: 'Список пуст, начните искать фильмы' });
+
   const [movieList, setMovieList] = useState(
     localStorage.getItem('movie-list') && localStorage.getItem('movie-query') ?
       localStorage.getItem('movie-query').trim().length !== 0 ? JSON.parse(localStorage.getItem('movie-list')) : [] :
@@ -32,7 +33,7 @@ export default function Movies({ onMoviesCardLike }) {
     MoviesApi()
       .then(data => {
         const filteredList = data.filter(card => {
-          return card.nameRU.toLowerCase().includes(query.toLowerCase())
+          return card.nameRU.toLowerCase().includes(query.toLowerCase()) && (isShortFilm ? card.duration <= 40 : true);
         });
         // sets filtered list and adds likes field
         setMovieList(filteredList.map(movie => {
@@ -50,12 +51,14 @@ export default function Movies({ onMoviesCardLike }) {
       })
       .finally(() => {
         setIsLoading(false);
+        localStorage.setItem('movie-query', query);
+        localStorage.setItem('movie-shortfilm', isShortFilm);
       });
   }, [savedCardList]);
 
 
   useEffect(() => {
-    loadList(localStorage.getItem('movie-query') || null, localStorage.getItem('movie-shortfilm') || false);
+    loadList(localStorage.getItem('movie-query') || null, localStorage.getItem('movie-shortfilm') === 'true' ? true : false);
   }, [isSavedCardListReady])
 
   function handleSubmit({ query, isShortFilm }) {
@@ -74,8 +77,9 @@ export default function Movies({ onMoviesCardLike }) {
       return;
     }
 
-    if (e.target.name === 'filter_def') {
+    if (e.target.name === 'filter_shortfilm') {
       localStorage.setItem('movie-shortfilm', e.target.checked);
+      loadList(localStorage.getItem('movie-query') || '', e.target.checked);
     }
   }
 

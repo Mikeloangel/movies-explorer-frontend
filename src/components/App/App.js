@@ -36,6 +36,9 @@ function App() {
   const [savedCardList, setSavedCardList] = useState([]);
   const [isSavedCardListReady, setIsSavedCardListReady] = useState(false);
 
+  const [cardList, setCardList] = useState([]);
+  const [isCardListReady, setIsCardListReady] = useState(false);
+
   const [infoToolTipType, setInfoToolTipType] = useState('hidden');
   const [infoToolTipMsg, setInfoToolTipMsg] = useState('');
   const imgList = { 'success': imgSuccess, 'fail': imgFail };
@@ -48,7 +51,8 @@ function App() {
           setSavedCardList(cards);
           setIsSavedCardListReady(true);
         })
-        .catch(() => {
+        .catch((errMsg) => {
+          console.log(errMsg);
           setInfoToolTipMsg('Не удалось загрузить сохраненные фильмы.');
           setInfoToolTipType('fail');
         });
@@ -121,9 +125,9 @@ function App() {
       .catch((err) => {
         setIsLogged(false);
         setCurrentUser({});
-        if (isLogged) {
-          history.push('/signin');
-        }
+        localStorage.removeItem('movie-list');
+        localStorage.removeItem('movie-query');
+        localStorage.removeItem('movie-shortfilm');
       })
       .finally(() => {
         setIsAppReady(true);
@@ -144,7 +148,7 @@ function App() {
 
   function handleLoginOnSuccess() {
     setIsLogged(true);
-    history.push('/');
+    history.push('/movies');
   }
 
   function handleLogout() {
@@ -155,6 +159,10 @@ function App() {
         history.push('/');
         setInfoToolTipMsg(msg);
         setInfoToolTipType('success');
+
+        localStorage.removeItem('movie-list');
+        localStorage.removeItem('movie-query');
+        localStorage.removeItem('movie-shortfilm');
       })
       .catch(() => {
         setInfoToolTipMsg('Произошла ошибка попробуйте заново');
@@ -174,10 +182,21 @@ function App() {
     setInfoToolTipType('success');
   }
 
-  function handleRegisterOnSuccess() {
+  function handleRegisterOnSuccess(values) {
     setInfoToolTipMsg('Успешно зарегистрированы');
     setInfoToolTipType('success');
-    history.push('/signin');
+    Api.authorization(values.email, values.password)
+      .then(msg => {
+        setIsLogged(true);
+        setInfoToolTipMsg('Добро пожаловать!');
+        setInfoToolTipType('success');
+        history.push('/movies');
+      })
+      .catch(errMsg => {
+        setInfoToolTipMsg('Ошибка автоматического входа!');
+        setInfoToolTipType('fail');
+        history.push('/signin');
+      })
   }
 
   function handleRegisterOnFail(msg) {
@@ -186,7 +205,7 @@ function App() {
   }
 
   return (
-    <AppContext.Provider value={{ isLogged, currentUser, savedCardList, isSavedCardListReady }}>
+    <AppContext.Provider value={{ isLogged, currentUser, cardList, isCardListReady, savedCardList, isSavedCardListReady }}>
       <div className="app">
         {
           isAppReady ?
@@ -236,7 +255,7 @@ function App() {
                 </Route>
               </Switch>
             ) :
-            (<Preloader />)
+            (<Preloader theme='fullscreen' />)
         }
 
 

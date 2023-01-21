@@ -23,8 +23,10 @@ This SPA website provides authentification and list with films and saved films.
 
 ## Links
 * [Figma layout file](https://disk.yandex.ru/d/p6Z5kQBpCpwasg)
-* [Backend API](https://github.com/Mikeloangel/movies-explorer-api)
-* [Frontend](https://github.com/Mikeloangel/movies-explorer-frontend)
+* [GH: Backend API](https://github.com/Mikeloangel/movies-explorer-api)
+* [GH: Frontend](https://github.com/Mikeloangel/movies-explorer-frontend)
+* [Frontend deployment](https://filmoteka.nomoredomains.club/signin)
+* [Backend deplyment](https://lumiere.nomoredomains.club')
 
 ***
 Uses icons from [Icons8](https://icons8.com)

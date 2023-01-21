@@ -7,7 +7,7 @@ import FilterCheckbox from '../FilterCheckbox/FilterCheckbox';
 
 export default function SearchForm({ onSubmit, defaultValues = {}, onChange }) {
   const [queryInput, setQueryInput] = useState(defaultValues.query || '');
-  const [isShortFilm, setIsShortFilm] = useState(defaultValues.isShortFilm || 'false');
+  const [isShortFilm, setIsShortFilm] = useState(defaultValues.isShortFilm || false);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -67,7 +67,9 @@ export default function SearchForm({ onSubmit, defaultValues = {}, onChange }) {
           label='Короткометражки'
           isDisabled={false}
           checked={isShortFilm}
-          onChange={handleCheckedChange} />
+          onChange={handleCheckedChange}
+          id = 'shortfilm'
+           />
 
       </form>
     </section>

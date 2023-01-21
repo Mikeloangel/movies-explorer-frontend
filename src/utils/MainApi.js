@@ -17,6 +17,8 @@ export const BASE_HEADERS = {
 const fetchApi = async (endpoint, method, body = null, headers = BASE_HEADERS, credentials = 'same-origin') => {
   const config = { method, headers, credentials };
 
+  // config.headers.mode = 'no-cors';
+
   if (body) {
     config.body = JSON.stringify(body);
   }
@@ -31,8 +33,7 @@ export const authorization = async (email, password) => {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       "withCredentials": true,
-    },
-    'include'
+    }, 'include'
   );
 
   if (res.status === 200) {
