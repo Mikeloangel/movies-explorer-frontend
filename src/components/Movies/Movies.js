@@ -19,6 +19,11 @@ export default function Movies({ onMoviesCardLike, onFirstSearch }) {
     const query = localStorage.getItem('movie-query');
     const isShortFilm = localStorage.getItem('movie-shortfilm') === 'true' ? true : false;
 
+    if(!query){
+      setMovieList([]);
+      return;
+    }
+
     const filteredList = cardList.filter(card => {
       return card.nameRU.toLowerCase().includes(query.toLowerCase()) && (isShortFilm ? card.duration <= 40 : true);
     });
@@ -36,7 +41,6 @@ export default function Movies({ onMoviesCardLike, onFirstSearch }) {
   }, [cardList, savedCardList]);
 
   const loadCachedFilms = useCallback(() => {
-    console.log('cached films are loading');
     const cachedMovieList = localStorage.getItem('movie-list') && localStorage.getItem('movie-query') ?
       localStorage.getItem('movie-query').trim().length !== 0 ? JSON.parse(localStorage.getItem('movie-list')) : [] :
       [];
@@ -72,8 +76,14 @@ export default function Movies({ onMoviesCardLike, onFirstSearch }) {
       return;
     }
 
-    const query = localStorage.getItem('movie-query');
+    const query = localStorage.getItem('movie-query') || '';
     const isShortFilm = localStorage.getItem('movie-shortfilm') === 'true' ? true : false;
+
+    if(!query){
+      setMovieList([]);
+      setIsLoading(false);
+      return;
+    }
 
     const filteredList = cardList.filter(card => {
       return card.nameRU.toLowerCase().includes(query.toLowerCase()) && (isShortFilm ? card.duration <= 40 : true);
@@ -116,10 +126,15 @@ export default function Movies({ onMoviesCardLike, onFirstSearch }) {
 
     if (e.target.name === 'filter_shortfilm') {
       localStorage.setItem('movie-shortfilm', e.target.checked);
-      if (!isCardListReady) {
-        loadCachedFilms();
-      } else {
+      if (isCardListReady) {
         loadList();
+      } else {
+        if (!e.target.checked) {
+          setIsLoading(true);
+          onFirstSearch();
+        } else {
+          loadCachedFilms();
+        }
       }
       return;
     }
@@ -152,7 +167,6 @@ export default function Movies({ onMoviesCardLike, onFirstSearch }) {
     <main className='movies'>
       <SearchForm
         onSubmit={handleSubmit}
-        // defaultValues={defaultFormValues}
         defaultValues={{
           query: localStorage.getItem('movie-query') || '',
           isShortFilm: localStorage.getItem('movie-shortfilm') === 'true' ? true : false,
