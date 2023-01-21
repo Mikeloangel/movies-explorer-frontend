@@ -5,6 +5,7 @@ import { Route, Switch, useHistory } from 'react-router-dom';
 import { AppContext } from '../../contexts/AppContext';
 
 import * as Api from '../../utils/MainApi';
+import { MoviesApi } from '../../utils/MoviesApi';
 import './App.css';
 
 // components
@@ -204,6 +205,22 @@ function App() {
     setInfoToolTipType('fail');
   }
 
+  function handleFirstSearch(cb) {
+    MoviesApi()
+      .then(data => {
+        setCardList(data);
+        setIsCardListReady(true);
+      })
+      .catch((errMsg) => {
+        setInfoToolTipMsg(`Во время запроса произошла ошибка.Возможно, проблема с соединением или сервер недоступен.
+        Подождите немного и попробуйте ещё раз`);
+        setInfoToolTipType('fail');
+        setIsCardListReady(false);
+        setCardList([]);
+      })
+      .finally(cb());
+  }
+
   return (
     <AppContext.Provider value={{ isLogged, currentUser, cardList, isCardListReady, savedCardList, isSavedCardListReady }}>
       <div className="app">
@@ -219,7 +236,7 @@ function App() {
 
                 <ProtectedRoute exact path='/movies' >
                   <Header />
-                  <Movies onMoviesCardLike={handleMoviesCardLike} />
+                  <Movies onMoviesCardLike={handleMoviesCardLike} onFirstSearch={handleFirstSearch} />
                   <Footer />
                 </ProtectedRoute>
 

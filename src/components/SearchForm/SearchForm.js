@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import './SearchForm.css';
 
@@ -68,8 +68,8 @@ export default function SearchForm({ onSubmit, defaultValues = {}, onChange }) {
           isDisabled={false}
           checked={isShortFilm}
           onChange={handleCheckedChange}
-          id = 'shortfilm'
-           />
+          id='shortfilm'
+        />
 
       </form>
     </section>
