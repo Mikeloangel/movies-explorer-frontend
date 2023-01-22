@@ -27,6 +27,7 @@ This SPA website provides authentification and list with films and saved films.
 * [GH: Frontend](https://github.com/Mikeloangel/movies-explorer-frontend)
 * [Frontend deployment](https://filmoteka.nomoredomains.club/)
 * [Backend deplyment](https://lumiere.nomoredomains.club/)
+* [Merge request](https://github.com/Mikeloangel/movies-explorer-frontend/pull/2)
 
 ***
 Uses icons from [Icons8](https://icons8.com)
