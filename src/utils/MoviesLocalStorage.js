@@ -1,12 +1,20 @@
 /**
  * Local storage logics
- * 01. utility private functions
- * 02. public functions
+ * 01. constants
+ * 02. utility private functions
+ * 03. public functions
  */
 
 import { LOCAL_STORAGE_PREFIX } from "./variables";
 
-// 01. utility functions
+// 01. constants
+// fields
+const enumFields = Object.freeze({
+  query: 'query',
+  shortfilm: 'shortfilm',
+  list: 'list'
+});
+// 02. utility public functions
 
 /**
  * Set pair name value to local storage
@@ -26,13 +34,16 @@ const _lsGetItem = (key) => {
   return localStorage.getItem(`${LOCAL_STORAGE_PREFIX}-${key}`);
 }
 
-// 02. export functions
+// 03. export functions
 /**
  *
  * @returns Array [query, isShortFilm]
  */
 export const getCurrentStorage = () => {
-  return [_lsGetItem('query') || '', _lsGetItem('shortfilm') === 'true' ? true : false];
+  return [
+    _lsGetItem(enumFields.query) || '',
+    _lsGetItem(enumFields.shortfilm) === 'true' ? true : false
+  ];
 }
 
 /**
@@ -45,8 +56,8 @@ export const setCurrentStorage = (query, isShortFilm) => {
     const [q, i] = query(...getCurrentStorage());
     setCurrentStorage(q, i);
   } else {
-    _lsSetItem('query', query);
-    _lsSetItem('shortfilm', isShortFilm)
+    _lsSetItem(enumFields.query, query);
+    _lsSetItem(enumFields.shortfilm, isShortFilm)
   }
 };
 
@@ -55,7 +66,7 @@ export const setCurrentStorage = (query, isShortFilm) => {
  * @returns returns parsed list as Object
  */
 export const getListFromStorage = () => {
-  return JSON.parse(_lsGetItem('list'));
+  return JSON.parse(_lsGetItem(enumFields.list) || {});
 };
 
 /**
@@ -63,7 +74,7 @@ export const getListFromStorage = () => {
  * @param {Array} list
  */
 export const setListToStorage = (list) => {
-  _lsSetItem('list', JSON.stringify(list))
+  _lsSetItem(enumFields.list, JSON.stringify(list))
 };
 
 /**
@@ -71,5 +82,5 @@ export const setListToStorage = (list) => {
  * @returns {Boolean}
  */
 export const checkIsListInStorage = () => {
-  return _lsGetItem('list') && _lsGetItem('query');
+  return _lsGetItem(enumFields.list) && _lsGetItem(enumFields.query);
 };
