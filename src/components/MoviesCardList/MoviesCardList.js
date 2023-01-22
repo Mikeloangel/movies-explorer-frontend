@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 import MoviesCard from '../MoviesCard/MoviesCard';
 
-// import { AppContext } from '../../contexts/AppContext';
+import { getObjectPropertyByPath } from '../../utils/getObjectPropertyByPath';
 
 import './MoviesCardList.css';
 import { Link } from 'react-router-dom';
@@ -17,13 +17,22 @@ import { Link } from 'react-router-dom';
  * @param {onCardLikeClick} function call back to set like for a card
  * @param {theme} String describes components theme
  * @param {pagenation} Boolean describes do we need pagination in component
+ * @param {cardLikeFields} Object object of settings
  * @returns JSX
  */
 
 /**
- * cardListFields {
- *  id: 'id' || 'movieId'
- * }
+cardListFields values:
+id - how id is named in card (e.g. 'id' or 'movieId')
+baseUrl - base url be added to image links
+mainImgPath - main path to img value in an object (formats.img.url)
+imgFormats - list of supported image formats if any
+    'thumbnail': main path to thumbnail img value in an object (image.formats.thumb)
+    'large': main path to large img value in an object (image.formats.large)
+    'medium': main path to medium img value in an object (image.formats.medium)
+    'small': main path to small img value in an object (image.formats.small)
+    },
+  }
  */
 
 export default function MoviesCardList({ cardList, emptyMessageSettings, onCardLikeClick, theme, pagenation, cardListFields }) {
@@ -102,25 +111,6 @@ export default function MoviesCardList({ cardList, emptyMessageSettings, onCardL
   // determines do we need to show more button
   const isShowMore = pagenation && sliceLimiter < cardList.length && outputList.length > 0;
 
-  // HARDCODE move to helper / utils
-  function translateObjectFieldByPath(object, path) {
-    if (!path) {
-      return undefined;
-    }
-    const route = path.split('.');
-    let res = object;
-
-    for (let current of route) {
-      if (res[current]) {
-        res = res[current];
-      } else {
-        return undefined;
-      }
-    }
-
-    return res;
-  }
-
   return (
     <section className='cardlist' aria-label='Список фильмов'>
       {
@@ -153,11 +143,11 @@ export default function MoviesCardList({ cardList, emptyMessageSettings, onCardL
                 trailerLink={card.trailerLink}
                 baseUrl={cardListFields.baseUrl}
                 imgName={card.nameRU}
-                imgUrl={translateObjectFieldByPath(card, cardListFields.mainImgPath)}
-                imgThumbnailUrl={translateObjectFieldByPath(card, cardListFields.imgFormats.thumbnail)}
-                imgLargeUrl={translateObjectFieldByPath(card, cardListFields.imgFormats.large)}
-                imgMediumUrl={translateObjectFieldByPath(card, cardListFields.imgFormats.medium)}
-                imgSmallUrl={translateObjectFieldByPath(card, cardListFields.imgFormats.small)}
+                imgUrl={getObjectPropertyByPath(card, cardListFields.mainImgPath)}
+                imgThumbnailUrl={getObjectPropertyByPath(card, cardListFields.imgFormats.thumbnail)}
+                imgLargeUrl={getObjectPropertyByPath(card, cardListFields.imgFormats.large)}
+                imgMediumUrl={getObjectPropertyByPath(card, cardListFields.imgFormats.medium)}
+                imgSmallUrl={getObjectPropertyByPath(card, cardListFields.imgFormats.small)}
               />
             </li>
           )

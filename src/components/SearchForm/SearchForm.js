@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import './SearchForm.css';
+
+import { getCurrentStorage } from '../../utils/MoviesLocalStorage';
 
 import imgSearchIco from '../../images/search-ico.png';
 import FilterCheckbox from '../FilterCheckbox/FilterCheckbox';
 
-export default function SearchForm({ onSubmit, defaultValues = {}, onChange }) {
-  const [queryInput, setQueryInput] = useState(defaultValues.query || '');
-  const [isShortFilm, setIsShortFilm] = useState(defaultValues.isShortFilm || false);
+export default function SearchForm({ onSubmit, onChange, useStorageWithDefaults }) {
+  const [queryInput, setQueryInput] = useState(useStorageWithDefaults ? getCurrentStorage()[0] : '');
+  const [isShortFilm, setIsShortFilm] = useState(useStorageWithDefaults ? getCurrentStorage()[1] : false);
 
   function handleSubmit(e) {
     e.preventDefault();

@@ -55,11 +55,6 @@ export default function SavedMovies({ onMoviesCardLike }) {
     };
   }
 
-  const defaultFormValues = {
-    query: '',
-    isShortFilm: false,
-  };
-
   const moviesFieldsSettings = {
     id: 'movieId',
     baseUrl: '',
@@ -86,7 +81,7 @@ export default function SavedMovies({ onMoviesCardLike }) {
     <main className='saved-movies'>
       <SearchForm
         onSubmit={handleSubmit}
-        defaultValues={defaultFormValues}
+        useStorageWithDefaults={false}
         onChange={handleFormChange}
       />
 

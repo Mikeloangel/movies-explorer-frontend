@@ -1,111 +1,104 @@
 import React, { useContext, useState, useEffect, useCallback } from 'react';
+
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import SearchForm from '../SearchForm/SearchForm';
+import Preloader from '../Preloader/Preloader';
 
-import { AppContext } from '../../contexts/AppContext';
+import {
+  getCurrentStorage,
+  setCurrentStorage,
+  getListFromStorage,
+  setListToStorage,
+  checkIsListInStorage,
+} from '../../utils/MoviesLocalStorage';
 
 import './Movies.css';
-import Preloader from '../Preloader/Preloader';
+import { AppContext } from '../../contexts/AppContext';
 
 export default function Movies({ onMoviesCardLike, onFirstSearch }) {
   const { savedCardList, isSavedCardListReady, cardList, isCardListReady } = useContext(AppContext);
 
   const [cardListEmptyMessage, setCardListEmptyMessage] = useState({ title: 'Список пуст, начните искать фильмы' });
 
-  const [movieList, setMovieList] = useState([]);
+  const [outputList, setOutputList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const loadList = useCallback(() => {
-    const query = localStorage.getItem('movie-query');
-    const isShortFilm = localStorage.getItem('movie-shortfilm') === 'true' ? true : false;
+  // sets current view with empty card list to show message
+  const clearView = useCallback(() => {
+    setOutputList([]);
+    setIsLoading(false);
+    setListToStorage([]);
+  }, []);
 
-    if(!query){
-      setMovieList([]);
+  // main filtering logic is here accepts
+  // {list} it can be be cached list or context list
+  const filterOutputList = useCallback((list) => {
+    const [query, isShortFilm] = getCurrentStorage();
+
+    if (!query) {
       return;
     }
 
-    const filteredList = cardList.filter(card => {
+    let newList = list.filter(card => {
       return card.nameRU.toLowerCase().includes(query.toLowerCase()) && (isShortFilm ? card.duration <= 40 : true);
-    });
-    // sets filtered list and adds likes field
-    setMovieList(filteredList.map(movie => {
+    }).map(movie => {
       movie.like = savedCardList.some(c => c.movieId === movie.id);
       return movie;
-    }));
-
-    // sets filtered list and adds likes field
-    setMovieList(filteredList.map(movie => {
-      movie.like = savedCardList.some(c => c.movieId === movie.id);
-      return movie;
-    }));
-  }, [cardList, savedCardList]);
-
-  const loadCachedFilms = useCallback(() => {
-    const cachedMovieList = localStorage.getItem('movie-list') && localStorage.getItem('movie-query') ?
-      localStorage.getItem('movie-query').trim().length !== 0 ? JSON.parse(localStorage.getItem('movie-list')) : [] :
-      [];
-    const query = localStorage.getItem('movie-query');
-    const isShortFilm = localStorage.getItem('movie-shortfilm') === 'true' ? true : false;
-
-    const filteredList = cachedMovieList.filter(card => {
-      return card.nameRU.toLowerCase().includes(query.toLowerCase()) && (isShortFilm ? card.duration <= 40 : true);
     });
+    setOutputList(newList);
+    setListToStorage(newList);
 
-    if (isSavedCardListReady) {
-      setMovieList(filteredList.map(movie => {
-        movie.like = savedCardList.some(c => c.movieId === movie.id);
-        return movie;
-      }));
-    } else {
-      setMovieList(filteredList);
+    return newList;
+  }, [savedCardList]);
+
+  const loadList = useCallback(() => {
+    const [query] = getCurrentStorage();
+
+    if (!query) {
+      clearView();
+      return;
     }
 
-  }, [isSavedCardListReady, savedCardList]);
+    filterOutputList(cardList);
+  }, [cardList, clearView, filterOutputList]);
 
-  // on mount
+  const loadCachedList = useCallback(() => {
+    const cachedMovieList = getListFromStorage();
+    filterOutputList(cachedMovieList);
+  }, [filterOutputList]);
+
+  // on mount show cached list
   useEffect(() => {
-    const isCacheddMovieList = localStorage.getItem('movie-list') && localStorage.getItem('movie-query');
-
-    if (isCacheddMovieList) {
-      loadCachedFilms();
+    if (checkIsListInStorage()) {
+      loadCachedList();
     }
-  }, [loadCachedFilms]);
+  }, [loadCachedList]);
 
+  // when lists are ready use cardList from context
   useEffect(() => {
     if (!isCardListReady || !isSavedCardListReady) {
       return;
     }
 
-    const query = localStorage.getItem('movie-query') || '';
-    const isShortFilm = localStorage.getItem('movie-shortfilm') === 'true' ? true : false;
+    const [query] = getCurrentStorage();
 
-    if(!query){
-      setMovieList([]);
-      setIsLoading(false);
+    if (!query) {
+      clearView();
       return;
     }
 
-    const filteredList = cardList.filter(card => {
-      return card.nameRU.toLowerCase().includes(query.toLowerCase()) && (isShortFilm ? card.duration <= 40 : true);
-    });
-    // sets filtered list and adds likes field
-    setMovieList(filteredList.map(movie => {
-      movie.like = savedCardList.some(c => c.movieId === movie.id);
-      return movie;
-    }));
-
-    localStorage.setItem('movie-list', JSON.stringify(filteredList));
+    const filteredList = filterOutputList(cardList);
+    setListToStorage(filteredList);
     setIsLoading(false);
 
-  }, [isCardListReady, isSavedCardListReady, cardList, savedCardList]);
+  }, [cardList, clearView, filterOutputList, isCardListReady, isSavedCardListReady]);
 
   function handleSubmit({ query, isShortFilm }) {
-    localStorage.setItem('movie-query', query);
-    localStorage.setItem('movie-shortfilm', isShortFilm);
+    setCurrentStorage(query, isShortFilm);
 
     if (query.trim().length === 0) {
       setCardListEmptyMessage({ title: 'Нужно ввести ключевое слово' });
-      setMovieList([]);
+      clearView();
       return;
     }
 
@@ -120,12 +113,12 @@ export default function Movies({ onMoviesCardLike, onFirstSearch }) {
 
   function handleFormChange(e) {
     if (e.target.name === 'film') {
-      localStorage.setItem('movie-query', e.target.value);
+      setCurrentStorage((query, isShortFilm) => [e.target.value, isShortFilm]);
       return;
     }
 
     if (e.target.name === 'filter_shortfilm') {
-      localStorage.setItem('movie-shortfilm', e.target.checked);
+      setCurrentStorage((query) => [query, e.target.checked]);
       if (isCardListReady) {
         loadList();
       } else {
@@ -133,7 +126,7 @@ export default function Movies({ onMoviesCardLike, onFirstSearch }) {
           setIsLoading(true);
           onFirstSearch();
         } else {
-          loadCachedFilms();
+          loadCachedList();
         }
       }
       return;
@@ -143,7 +136,7 @@ export default function Movies({ onMoviesCardLike, onFirstSearch }) {
   function handleCardLikeClick(card) {
     if (typeof onMoviesCardLike === 'function') {
       onMoviesCardLike(card, (id, isLiked) => {
-        setMovieList(prev => prev.map(movie => {
+        setOutputList(prev => prev.map(movie => {
           movie.id === id && (movie.like = isLiked);
           return movie;
         }));
@@ -167,17 +160,14 @@ export default function Movies({ onMoviesCardLike, onFirstSearch }) {
     <main className='movies'>
       <SearchForm
         onSubmit={handleSubmit}
-        defaultValues={{
-          query: localStorage.getItem('movie-query') || '',
-          isShortFilm: localStorage.getItem('movie-shortfilm') === 'true' ? true : false,
-        }}
+        useStorageWithDefaults={true}
         onChange={handleFormChange}
       />
 
       {isLoading ?
         (<Preloader />) :
         (<MoviesCardList
-          cardList={movieList}
+          cardList={outputList}
           onCardLikeClick={handleCardLikeClick}
           emptyMessageSettings={cardListEmptyMessage}
           pagenation={true}
