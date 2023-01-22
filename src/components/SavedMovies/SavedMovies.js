@@ -1,18 +1,22 @@
 import React, { useContext, useState, useEffect, useCallback, useMemo } from 'react';
 
+// components
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
+import Preloader from '../Preloader/Preloader';
 import SearchForm from '../SearchForm/SearchForm';
 
+// utils
 import { AppContext } from '../../contexts/AppContext';
 
+// css
 import './SavedMovies.css';
-import Preloader from '../Preloader/Preloader';
 
 export default function SavedMovies({ onMoviesCardLike }) {
   const { savedCardList, isSavedCardListReady } = useContext(AppContext);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [searchIsShort, setIsShort] = useState(false);
+
   const [filteredCardList, setFilteredCardList] = useState([]);
   const [isInFilteringProcess, setIsInFilteringProcess] = useState(true);
 

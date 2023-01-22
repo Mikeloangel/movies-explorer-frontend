@@ -1,7 +1,7 @@
-const BASE_URL = 'https://api.nomoreparties.co/beatfilm-movies/';
+import { BASE_MOVIES_API_URL } from "./variables";
 
 export const MoviesApi = async () => {
-  const res = await fetch(BASE_URL,
+  const res = await fetch(BASE_MOVIES_API_URL,
     {
       method: 'GET',
       headers: {
@@ -9,10 +9,10 @@ export const MoviesApi = async () => {
       }
     })
 
-    if(res.ok){
-      const data = await res.json();
-      return data;
-    }
+  if (res.ok) {
+    const data = await res.json();
+    return data;
+  }
 
-    return Promise.reject('Ошибка MoviesAPI');
+  return Promise.reject('Ошибка MoviesAPI');
 }

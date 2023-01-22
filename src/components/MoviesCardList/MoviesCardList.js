@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 
+// Components
 import MoviesCard from '../MoviesCard/MoviesCard';
 
+// Utils
 import { getObjectPropertyByPath } from '../../utils/getObjectPropertyByPath';
 
+// CSS
 import './MoviesCardList.css';
-import { Link } from 'react-router-dom';
 
 /**
  *
@@ -104,7 +107,9 @@ export default function MoviesCardList({ cardList, emptyMessageSettings, onCardL
   function handleNextPage() {
     const increment = (numberOfColumns > 1 ? numberOfColumns : 5);
     // addition needs to calculate missed cards to fill row evenly
-    const addition = numberOfColumns - sliceLimiter % numberOfColumns === numberOfColumns ? 0 : numberOfColumns - sliceLimiter % numberOfColumns;
+    const addition = numberOfColumns - sliceLimiter % numberOfColumns === numberOfColumns ?
+      0 :
+      numberOfColumns - sliceLimiter % numberOfColumns;
     setSliceLimiter(sliceLimiter + increment + addition);
   }
 

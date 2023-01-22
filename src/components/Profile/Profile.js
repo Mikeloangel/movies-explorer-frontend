@@ -1,11 +1,14 @@
 import React, { useContext, useState } from 'react';
 
+// Formik
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 
+// Utils
 import { AppContext } from '../../contexts/AppContext';
 import * as api from "../../utils/MainApi";
 
+// CSS
 import './Profile.css';
 
 export default function Profile({ onLogout, onChange }) {
@@ -14,6 +17,7 @@ export default function Profile({ onLogout, onChange }) {
 
   // formik form validation logics
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
       email: currentUser.email,
       name: currentUser.name,
@@ -42,7 +46,7 @@ export default function Profile({ onLogout, onChange }) {
         .finally(() => {
           setIsSubmittingForm(false);
         });
-    }
+    },
   });
 
   return (

@@ -1,13 +1,18 @@
 import React, { useState, useContext } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 
+// Utils
 import { AppContext } from '../../contexts/AppContext';
 import * as api from "../../utils/MainApi";
 
+// Formik
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 
+// CSS
 import './Login.css';
+
+// Components
 import Auth from '../Auth/Auth';
 
 export default function Login({ onSuccess, onFail }) {
@@ -17,8 +22,10 @@ export default function Login({ onSuccess, onFail }) {
   // formik form validation logics
   const formik = useFormik({
     initialValues: {
-      email: 'mail1@ya.ru',
-      password: '123'
+      email: '',
+      password: ''
+      // email: 'mail1@ya.ru',
+      // password: '123'
     },
     validationSchema: Yup.object({
       email: Yup
@@ -43,12 +50,14 @@ export default function Login({ onSuccess, onFail }) {
     }
   });
 
+  function handleFocus(e) {
+    formik.setTouched({ ...formik.touched, [e.target.name]: true });
+  }
+
   return isLogged ?
     (<Redirect to='/' />) :
     (
-      <Auth
-        title='Рады видеть!'>
-
+      <Auth title='Рады видеть!'>
         <form
           className='auth__form'
           name='form'
@@ -68,9 +77,10 @@ export default function Login({ onSuccess, onFail }) {
             value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            onFocus={handleFocus}
           />
           <p className='auth__error-message'>
-            {formik.touched.email && formik.errors.email}
+            {formik.errors.email && formik.touched.email ? formik.errors.email : ''}
           </p>
 
           <label
@@ -87,17 +97,17 @@ export default function Login({ onSuccess, onFail }) {
             value={formik.values.password}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            onFocus={handleFocus}
           />
           <p className='auth__error-message'>
-            {formik.touched.password && formik.errors.password}
+            {formik.errors.password && formik.touched.password ? formik.errors.password : ''}
           </p>
 
           <div className='auth__button-wrapper'>
             <button
               type='submit'
               className='auth__button'
-              // disabled={!(formik.isValid && (formik.dirty && !isSubmittingForm))}
-              disabled={!(formik.isValid && (!isSubmittingForm))}
+              disabled={!(formik.isValid && (formik.dirty && !isSubmittingForm))}
             >
               {isSubmittingForm ? 'В процессе...' : 'Войти'}
             </button>

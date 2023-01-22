@@ -1,10 +1,6 @@
-import { BASE_API_URL } from "./variables";
 import parseErrorMessage from "./parseErrorMessage";
 
-export const BASE_URL = BASE_API_URL;
-export const BASE_HEADERS = {
-  'Content-Type': 'application/json',
-}
+import { BASE_API_URL } from "./variables";
 
 /**
  * Makes fetch request to API
@@ -12,18 +8,17 @@ export const BASE_HEADERS = {
  * @param {String} method
  * @param {Object} body
  * @param {Object} headers
+ * @param {String} credentials
  * @returns {Promise}
  */
-const fetchApi = async (endpoint, method, body = null, headers = BASE_HEADERS, credentials = 'same-origin') => {
+const fetchApi = async (endpoint, method, body = null, headers = { 'Content-Type': 'application/json', }, credentials = 'same-origin') => {
   const config = { method, headers, credentials };
-
-  // config.headers.mode = 'no-cors';
 
   if (body) {
     config.body = JSON.stringify(body);
   }
 
-  return await fetch(`${BASE_URL}/${endpoint}`, config);
+  return await fetch(`${BASE_API_URL}/${endpoint}`, config);
 }
 
 // authorization

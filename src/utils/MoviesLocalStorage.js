@@ -14,8 +14,9 @@ const enumFields = Object.freeze({
   shortfilm: 'shortfilm',
   list: 'list'
 });
-// 02. utility public functions
 
+
+// 02. utility public functions
 /**
  * Set pair name value to local storage
  * @param {String} key
@@ -34,6 +35,14 @@ const _lsGetItem = (key) => {
   return localStorage.getItem(`${LOCAL_STORAGE_PREFIX}-${key}`);
 }
 
+/**
+ * Removes item from local storage
+ * @param {String} key
+ */
+const _lsRemoveItem = (key) => {
+  localStorage.removeItem(`${LOCAL_STORAGE_PREFIX}-${key}`);
+}
+
 // 03. export functions
 /**
  *
@@ -48,7 +57,8 @@ export const getCurrentStorage = () => {
 
 /**
  * Sets current storage with new values
- * @param {String or function} query if function should accept previous values, cb shoud return array as [query, isShortFilm]
+ * @param {String or function} query if function should accept previous values,
+ *                                   cb shoud return array as [query, isShortFilm]
  * @param {Boolean} isShortFilm
  */
 export const setCurrentStorage = (query, isShortFilm) => {
@@ -66,7 +76,7 @@ export const setCurrentStorage = (query, isShortFilm) => {
  * @returns returns parsed list as Object
  */
 export const getListFromStorage = () => {
-  return JSON.parse(_lsGetItem(enumFields.list) || {});
+  return checkIsListInStorage() && JSON.parse(_lsGetItem(enumFields.list) || []);
 };
 
 /**
@@ -84,3 +94,10 @@ export const setListToStorage = (list) => {
 export const checkIsListInStorage = () => {
   return _lsGetItem(enumFields.list) && _lsGetItem(enumFields.query);
 };
+
+/**
+ * Clears local storage
+ */
+export const removeItemsFromStorage = () => {
+  Object.keys(enumFields).forEach(item => _lsRemoveItem(item));
+}

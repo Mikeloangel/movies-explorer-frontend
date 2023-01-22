@@ -1,30 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
 
 // context
 import { AppContext } from '../../contexts/AppContext';
 
-import * as Api from '../../utils/MainApi';
-import { MoviesApi } from '../../utils/MoviesApi';
+// CSS
 import './App.css';
 
+// Utils
+import * as Api from '../../utils/MainApi';
+import { MoviesApi } from '../../utils/MoviesApi';
+import { removeItemsFromStorage } from '../../utils/MoviesLocalStorage';
+import { CARD_MAIN_IMG_BASE_URL } from '../../utils/variables';
+
 // components
-import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
 import Main from '../Main/Main';
-import Movies from '../Movies/Movies';
-import Profile from '../Profile/Profile';
+import Header from '../Header/Header';
+import InfoToolTip from '../InfoToolTip/InfoToolTip';
 import Login from '../Login/Login';
+import Movies from '../Movies/Movies';
+import NotFound from '../NotFound/NotFound';
+import Profile from '../Profile/Profile';
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
+import Preloader from '../Preloader/Preloader';
 import Register from '../Register/Register';
 import SavedMovies from '../SavedMovies/SavedMovies';
-import Footer from '../Footer/Footer';
-import NotFound from '../NotFound/NotFound';
-import InfoToolTip from '../InfoToolTip/InfoToolTip';
 
 // images
 import imgSuccess from '../../images/succeed.png';
 import imgFail from '../../images/fail.png';
-import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
-import Preloader from '../Preloader/Preloader';
 
 function App() {
   const history = useHistory();
@@ -43,6 +48,12 @@ function App() {
   const [infoToolTipType, setInfoToolTipType] = useState('hidden');
   const [infoToolTipMsg, setInfoToolTipMsg] = useState('');
   const imgList = { 'success': imgSuccess, 'fail': imgFail };
+  const imgEnumTypes = { hidden: 'hidden', success: 'success', fail: 'fail' };
+
+  const showInfoToolTipPopup = useCallback((msg, type) => {
+    setInfoToolTipMsg(msg);
+    setInfoToolTipType(type);
+  }, []);
 
   // recieves users list of liked film
   useEffect(() => {
@@ -53,41 +64,38 @@ function App() {
           setIsSavedCardListReady(true);
         })
         .catch((errMsg) => {
-          console.log(errMsg);
-          setInfoToolTipMsg('Не удалось загрузить сохраненные фильмы.');
-          setInfoToolTipType('fail');
+          showInfoToolTipPopup('Не удалось загрузить сохраненные фильмы.', imgEnumTypes.fail);
         });
     } else {
       setSavedCardList([]);
       setIsSavedCardListReady(false);
     }
-  }, [isLogged]);
+  }, [isLogged, showInfoToolTipPopup, imgEnumTypes.fail]);
 
+  // card like from Movies component
   function handleMoviesCardLike(card, cb) {
-    const baseUrl = 'https://api.nomoreparties.co';
     const movie = savedCardList.find(savedCard => savedCard.movieId === card.id)
     if (movie) {
-      // then delete
+      // then delete liked movie
       Api.deleteMovie(movie._id)
         .then(() => {
           setSavedCardList(prev => prev.filter(item => item.movieId !== movie.movieId));
           cb(movie.movieId, false);
         })
         .catch(errMsg => {
-          setInfoToolTipMsg('Ошибка удаления лайка.' + errMsg);
-          setInfoToolTipType('fail');
+          showInfoToolTipPopup('Ошибка удаления лайка.', imgEnumTypes.fail);
         });
     } else {
-      // else add
+      // else add liked movie
       Api.postMovie({
         country: card.country,
         director: card.director,
         duration: card.duration,
         year: card.year.toString(),
         description: card.description,
-        image: baseUrl + card.image.url,
+        image: CARD_MAIN_IMG_BASE_URL + card.image.url,
         trailerLink: card.trailerLink,
-        thumbnail: baseUrl + card.image.formats.thumbnail.url,
+        thumbnail: CARD_MAIN_IMG_BASE_URL + card.image.formats.thumbnail.url,
         movieId: card.id,
         nameRU: card.nameRU,
         nameEN: card.nameEN
@@ -97,23 +105,21 @@ function App() {
           cb(updatedCard.movieId, true);
         })
         .catch(errMsg => {
-          setInfoToolTipMsg('Ошибка добавления лайка.' + errMsg);
-          setInfoToolTipType('fail');
+          showInfoToolTipPopup('Ошибка добавления лайка.', imgEnumTypes.fail)
         });
     }
   }
 
+  // Card like from SaveMovies component
   function handleSavedMoviesCardLike(card) {
     Api.deleteMovie(card._id)
       .then(() => {
         setSavedCardList(prev => prev.filter(item => item.movieId !== card.movieId));
       })
-      .catch((errMsg) => {
-        setInfoToolTipMsg('Ошибка удаления лайка.' + errMsg);
-        setInfoToolTipType('fail');
+      .catch(() => {
+        showInfoToolTipPopup('Ошибка удаления лайка.', imgEnumTypes.fail);
       });
   }
-
 
   // if can getUsersMe then we have valid cookies and can update userinfo
   // othervise logout
@@ -123,12 +129,10 @@ function App() {
         setCurrentUser(userInfo);
         setIsLogged(true);
       })
-      .catch((err) => {
-        setIsLogged(false);
+      .catch(() => {
         setCurrentUser({});
-        localStorage.removeItem('movie-list');
-        localStorage.removeItem('movie-query');
-        localStorage.removeItem('movie-shortfilm');
+        setIsLogged(false);
+        removeItemsFromStorage();
       })
       .finally(() => {
         setIsAppReady(true);
@@ -137,14 +141,11 @@ function App() {
 
 
   function handleInfoToolTipClose() {
-    setInfoToolTipMsg('');
-    setInfoToolTipType('hidden');
+    showInfoToolTipPopup('', imgEnumTypes.hidden);
   }
 
-  function handleLoginOnFail(errMsg) {
-    console.error(errMsg);
-    setInfoToolTipMsg('Неверный логин или пароль!');
-    setInfoToolTipType('fail');
+  function handleLoginOnFail() {
+    showInfoToolTipPopup('Неверный логин или пароль!', imgEnumTypes.fail);
   }
 
   function handleLoginOnSuccess() {
@@ -158,51 +159,45 @@ function App() {
         setIsLogged(false);
         setCurrentUser({});
         history.push('/');
-        setInfoToolTipMsg(msg);
-        setInfoToolTipType('success');
-
-        localStorage.removeItem('movie-list');
-        localStorage.removeItem('movie-query');
-        localStorage.removeItem('movie-shortfilm');
+        removeItemsFromStorage();
+        setCardList([]);
+        setSavedCardList([]);
+        setIsCardListReady(false);
+        setIsSavedCardListReady(false);
+        showInfoToolTipPopup(msg, imgEnumTypes.success);
       })
       .catch(() => {
-        setInfoToolTipMsg('Произошла ошибка попробуйте заново');
-        setInfoToolTipType('fail');
+        showInfoToolTipPopup('Произошла ошибка попробуйте заново', imgEnumTypes.fail);
       })
   }
 
   function handleProfileChange(updatedUser, err = null) {
     if (err) {
-      setInfoToolTipMsg(err);
-      setInfoToolTipType('fail');
+      showInfoToolTipPopup(err, imgEnumTypes.fail);
       return;
     }
 
     setCurrentUser(updatedUser);
-    setInfoToolTipMsg('Успешно обновленно');
-    setInfoToolTipType('success');
+    showInfoToolTipPopup('Успешно обновленно', imgEnumTypes.success);
   }
 
   function handleRegisterOnSuccess(values) {
-    setInfoToolTipMsg('Успешно зарегистрированы');
-    setInfoToolTipType('success');
+    showInfoToolTipPopup('Успешно зарегистрированы', imgEnumTypes.success);
+
     Api.authorization(values.email, values.password)
-      .then(msg => {
+      .then(() => {
         setIsLogged(true);
-        setInfoToolTipMsg('Добро пожаловать!');
-        setInfoToolTipType('success');
+        showInfoToolTipPopup('Добро пожаловать!', imgEnumTypes.success);
         history.push('/movies');
       })
-      .catch(errMsg => {
-        setInfoToolTipMsg('Ошибка автоматического входа!');
-        setInfoToolTipType('fail');
+      .catch(() => {
+        showInfoToolTipPopup('Ошибка автоматического входа!', imgEnumTypes.fail);
         history.push('/signin');
-      })
+      });
   }
 
   function handleRegisterOnFail(msg) {
-    setInfoToolTipMsg(msg);
-    setInfoToolTipType('fail');
+    showInfoToolTipPopup(msg, imgEnumTypes.fail);
   }
 
   function handleFirstSearch(cb) {
@@ -212,9 +207,8 @@ function App() {
         setIsCardListReady(true);
       })
       .catch((errMsg) => {
-        setInfoToolTipMsg(`Во время запроса произошла ошибка.Возможно, проблема с соединением или сервер недоступен.
-        Подождите немного и попробуйте ещё раз`);
-        setInfoToolTipType('fail');
+        showInfoToolTipPopup(`Во время запроса произошла ошибка.Возможно, проблема с соединением или сервер недоступен.
+        Подождите немного и попробуйте ещё раз`, imgEnumTypes.fail);
         setIsCardListReady(false);
         setCardList([]);
       });
@@ -273,7 +267,6 @@ function App() {
             ) :
             (<Preloader theme='fullscreen' />)
         }
-
 
         {/* success' 'fail' */}
         <InfoToolTip

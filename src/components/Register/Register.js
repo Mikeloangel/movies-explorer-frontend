@@ -1,13 +1,18 @@
 import React, { useContext, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 
+// utils
 import { AppContext } from '../../contexts/AppContext';
 import * as api from "../../utils/MainApi";
 
+// formik
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 
+// css
 import './Register.css';
+
+// components
 import Auth from '../Auth/Auth';
 
 export default function Register({ onFail, onSuccess }) {
@@ -16,8 +21,6 @@ export default function Register({ onFail, onSuccess }) {
 
   // formik form validation logics
   const formik = useFormik({
-    validateOnChange: true,
-    validateOnBlur: false,
     initialValues: {
       email: '',
       name: '',
@@ -48,10 +51,12 @@ export default function Register({ onFail, onSuccess }) {
           onFail(errorMsg);
           setIsSubmittingForm(false);
         })
-    }
+    },
   });
 
-  console.log(formik);
+  function handleFocus(e) {
+    formik.setTouched({ ...formik.touched, [e.target.name]: true });
+  }
 
   return isLogged ?
     (<Redirect to='/' />) :
@@ -69,7 +74,6 @@ export default function Register({ onFail, onSuccess }) {
           </label>
           <input
             className={`auth__input ${formik.errors.name && 'auth__input_invalid'}`}
-            // className={`auth__input ${formik.errors.name && formik.touched.name && 'auth__input_invalid'}`}
             name='name'
             id='name'
             type='text'
@@ -79,10 +83,10 @@ export default function Register({ onFail, onSuccess }) {
             value={formik.values.name}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            onFocus={handleFocus}
           />
           <p className='auth__error-message'>
-            {/* {formik.touched.name && formik.errors.name} */}
-            {formik.errors.name}
+            {formik.errors.name && formik.touched.name ? formik.errors.name : ''}
           </p>
 
           <label
@@ -91,7 +95,6 @@ export default function Register({ onFail, onSuccess }) {
             E-mail
           </label>
           <input
-            // className={`auth__input ${formik.errors.email && formik.touched.email && 'auth__input_invalid'}`}
             className={`auth__input ${formik.errors.email && 'auth__input_invalid'}`}
             name='email'
             id='email'
@@ -100,10 +103,10 @@ export default function Register({ onFail, onSuccess }) {
             value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            onFocus={handleFocus}
           />
           <p className='auth__error-message'>
-            {formik.errors.email}
-            {/* {formik.touched.email && formik.errors.email} */}
+            {formik.errors.email && formik.touched.email ? formik.errors.email : ''}
           </p>
 
           <label
@@ -113,7 +116,6 @@ export default function Register({ onFail, onSuccess }) {
           </label>
           <input
             className={`auth__input ${formik.errors.password && 'auth__input_invalid'}`}
-            // className={`auth__input ${formik.errors.password && formik.touched.password && 'auth__input_invalid'}`}
             name='password'
             id='password'
             type='password'
@@ -121,10 +123,10 @@ export default function Register({ onFail, onSuccess }) {
             value={formik.values.password}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            onFocus={handleFocus}
           />
           <p className='auth__error-message'>
-            {formik.errors.password}
-            {/* {formik.touched.password && formik.errors.password} */}
+            {formik.errors.password && formik.touched.password ? formik.errors.password : ''}
           </p>
 
           <div className='auth__button-wrapper'>

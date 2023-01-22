@@ -2,19 +2,19 @@ import React from 'react';
 
 import './AboutMe.css';
 
-import imgProfile from '../../images/student.png'
+import imgProfile from '../../images/student.jpg'
 
 export default function aboutMe() {
   return (
     <div className='aboutme'>
       <div className='aboutme__wrapper'>
-        <h3 className='aboutme__name'>Виталий</h3>
-        <p className='aboutme__position'>Фронтенд-разработчик, 30 лет</p>
+        <h3 className='aboutme__name'>Михаил</h3>
+        <p className='aboutme__position'>Фронтенд-разработчик, 36 лет</p>
         <p className='aboutme__bio'>
-          Я родился и живу в Саратове, закончил факультет экономики СГУ. У меня есть жена
-          и дочь. Я люблю слушать музыку, а ещё увлекаюсь бегом. Недавно начал кодить.
-          С 2015 года работал в компании «СКБ Контур». После того, как прошёл курс по веб-разработке,
-          начал заниматься фриланс-заказами и ушёл с постоянной работы.
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium, aut magnam.
+          Voluptate placeat nostrum, unde iure quidem beatae. Facilis, ex.
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium, aut magnam.
+          Voluptate placeat nostrum, unde iure quidem beatae. Facilis, ex.
         </p>
         <a
           href='https://github.com/Mikeloangel/'
@@ -24,7 +24,7 @@ export default function aboutMe() {
           Github
         </a>
       </div>
-      <img src={imgProfile} alt='Виталий' className='aboutme__pic' />
+      <img src={imgProfile} alt='Михаил' className='aboutme__pic' />
     </div>
   )
 }

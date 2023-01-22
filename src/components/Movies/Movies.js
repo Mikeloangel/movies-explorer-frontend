@@ -1,8 +1,12 @@
 import React, { useContext, useState, useEffect, useCallback } from 'react';
 
+// Components
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
-import SearchForm from '../SearchForm/SearchForm';
 import Preloader from '../Preloader/Preloader';
+import SearchForm from '../SearchForm/SearchForm';
+
+// Utils
+import { AppContext } from '../../contexts/AppContext';
 
 import {
   getCurrentStorage,
@@ -12,8 +16,10 @@ import {
   checkIsListInStorage,
 } from '../../utils/MoviesLocalStorage';
 
+import { CARD_MAIN_IMG_BASE_URL } from '../../utils/variables';
+
+// CSS
 import './Movies.css';
-import { AppContext } from '../../contexts/AppContext';
 
 export default function Movies({ onMoviesCardLike, onFirstSearch }) {
   const { savedCardList, isSavedCardListReady, cardList, isCardListReady } = useContext(AppContext);
@@ -146,7 +152,7 @@ export default function Movies({ onMoviesCardLike, onFirstSearch }) {
 
   const moviesFieldsSettings = {
     id: 'id',
-    baseUrl: 'https://api.nomoreparties.co',
+    baseUrl: CARD_MAIN_IMG_BASE_URL,
     mainImgPath: 'image.url',
     imgFormats: {
       'thumbnail': 'image.formats.thumbnail.url',

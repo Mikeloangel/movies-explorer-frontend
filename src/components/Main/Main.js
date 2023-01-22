@@ -1,12 +1,14 @@
 import React from 'react';
 
-import Promo from '../Promo/Promo';
-import MainSection from '../MainSection/MainSection';
-import AboutProject from '../AboutProject/AboutProject';
-import Techs from '../Techs/Techs';
+// Components
 import AboutMe from '../AboutMe/AboutMe';
+import AboutProject from '../AboutProject/AboutProject';
+import MainSection from '../MainSection/MainSection';
 import Portfolio from '../Portfolio/Portfolio';
+import Promo from '../Promo/Promo';
+import Techs from '../Techs/Techs';
 
+// CSS
 import './Main.css';
 
 export default function Main() {

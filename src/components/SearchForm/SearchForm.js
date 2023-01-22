@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 
+// css
 import './SearchForm.css';
 
+// utils
 import { getCurrentStorage } from '../../utils/MoviesLocalStorage';
 
-import imgSearchIco from '../../images/search-ico.png';
+// components
 import FilterCheckbox from '../FilterCheckbox/FilterCheckbox';
+
+// images
+import imgSearchIco from '../../images/search-ico.png';
 
 export default function SearchForm({ onSubmit, onChange, useStorageWithDefaults }) {
   const [queryInput, setQueryInput] = useState(useStorageWithDefaults ? getCurrentStorage()[0] : '');
