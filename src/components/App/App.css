@@ -8,6 +8,9 @@
   --cl-text-primary: #000;
   --cl-text-secondary: #fff;
   --cl-text-200: #a0a0a0;
+  --cl-text-300: #707070;
+  --cl-text-400: #505050;
+  --cl-text-500: #303030;
 
   /* bg colors */
   --bg-dark-accent: #073042;

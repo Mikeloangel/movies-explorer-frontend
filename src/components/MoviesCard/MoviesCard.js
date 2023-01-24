@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 
 import './MoviesCard.css';
 
@@ -30,10 +31,10 @@ export default function MoviesCard({
   return (
     <article className={`card card_theme_${theme}`}>
       <figure className='card__figure'>
-        <a
-          href={trailerLink}
-          rel='noopener noreferrer'
-          target='_blank'
+        <Link to={`/movie/${id}`}
+          // href={trailerLink}
+          // rel='noopener noreferrer'
+          // target='_blank'
         >
           <picture className='card__picture'>
             {imgThumbnailUrl && (<source media="(min-width:1000px)" srcSet={baseUrl + imgThumbnailUrl} />)}
@@ -42,7 +43,7 @@ export default function MoviesCard({
             {imgSmallUrl && (<source media="(min-width:425px)" srcSet={baseUrl + imgSmallUrl} />)}
             <img src={baseUrl + imgUrl} alt={imgName} className='card__img' />
           </picture>
-        </a>
+        </Link>
         <figcaption className='card__figcapture' title={nameRU}>
           <div className='card__titles-wrapper'>
             <h2 className='card__title'>{nameRU}</h2>

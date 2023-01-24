@@ -30,6 +30,7 @@ import SavedMovies from '../SavedMovies/SavedMovies';
 // images
 import imgSuccess from '../../images/succeed.png';
 import imgFail from '../../images/fail.png';
+import Movie from '../Movie/Movie';
 
 function App() {
   const history = useHistory();
@@ -80,9 +81,9 @@ function App() {
       Api.deleteMovie(movie._id)
         .then(() => {
           setSavedCardList(prev => prev.filter(item => item.movieId !== movie.movieId));
-          cb(movie.movieId, false);
+          typeof cb === 'function' && cb(movie.movieId, false);
         })
-        .catch(errMsg => {
+        .catch(() => {
           showInfoToolTipPopup('Ошибка удаления лайка.', imgEnumTypes.fail);
         });
     } else {
@@ -102,7 +103,7 @@ function App() {
       })
         .then(updatedCard => {
           setSavedCardList(prev => [updatedCard, ...prev]);
-          cb(updatedCard.movieId, true);
+          typeof cb === 'function' && cb(updatedCard.movieId, true);
         })
         .catch(errMsg => {
           showInfoToolTipPopup('Ошибка добавления лайка.', imgEnumTypes.fail)
@@ -245,6 +246,18 @@ function App() {
                   <Profile
                     onChange={handleProfileChange}
                     onLogout={handleLogout} />
+                </ProtectedRoute>
+
+                <ProtectedRoute path='/movie/:movieId'>
+                  <Header />
+                  <Route
+                    path="/movie/:movieId"
+                    component={() => <Movie
+                      onFirstLoad={handleFirstSearch}
+                      onLikeClick={handleMoviesCardLike}
+                    />}
+                  />
+                  <Footer />
                 </ProtectedRoute>
 
                 <Route exact path='/signup'>
