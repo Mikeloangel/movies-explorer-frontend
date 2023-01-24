@@ -1,34 +1,107 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect, useCallback, useMemo } from 'react';
 
+// components
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
+import Preloader from '../Preloader/Preloader';
 import SearchForm from '../SearchForm/SearchForm';
 
+// utils
 import { AppContext } from '../../contexts/AppContext';
 
+// css
 import './SavedMovies.css';
 
-export default function SavedMovies({onMoviesCardLike}) {
-  const { cardList } = useContext(AppContext);
+export default function SavedMovies({ onMoviesCardLike }) {
+  const { savedCardList, isSavedCardListReady } = useContext(AppContext);
 
-  // const filteredList useMemo()
-  const filteredList = cardList.filter((e) => e.like);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchIsShort, setIsShort] = useState(false);
 
-  const emptyMessageSettings = {
-    title: 'Вы пока не полюбили ни одного фильма',
-    redirect: '/movies',
-    redirectTitle: 'Полюбить фильмы можно тут'
+  const [filteredCardList, setFilteredCardList] = useState([]);
+  const [isInFilteringProcess, setIsInFilteringProcess] = useState(true);
+
+  const loadList = useCallback((query, isShortFilm) => {
+    setSearchQuery(query);
+    setIsShort(isShortFilm)
+    setIsInFilteringProcess(true);
+
+    setFilteredCardList(() => {
+      return savedCardList.filter(card =>
+        card.nameRU.toLowerCase().includes(query.toLowerCase()) &&
+        (isShortFilm ? card.duration <= 40 : true)
+      );
+    })
+
+    setIsInFilteringProcess(false);
+  }, [savedCardList]);
+
+  useEffect(() => {
+    if (isSavedCardListReady) {
+      setFilteredCardList(savedCardList);
+      setIsInFilteringProcess(false);
+      loadList(searchQuery, searchIsShort);
+    }
+  }, [savedCardList, isSavedCardListReady, loadList, searchIsShort, searchQuery])
+
+  function handleSubmit({ query, isShortFilm }) {
+    loadList(query, isShortFilm);
   }
+
+  function handleFormChange(e) {
+    if (e.target.name === 'filter_shortfilm') {
+      setIsShort(e.target.checked);
+    }
+  }
+
+  function handleSavedMovieCardLike(card) {
+    if (typeof onMoviesCardLike === 'function') {
+      onMoviesCardLike(card);
+    };
+  }
+
+  const moviesFieldsSettings = {
+    id: 'movieId',
+    baseUrl: '',
+    mainImgPath: 'image',
+    imgFormats: {
+      'thumbnail': 'thumbnail',
+    }
+  }
+
+  const emptyMessageSettings = useMemo(() => {
+    const title = savedCardList.length === 0 ?
+      'Вы пока не полюбили ни одного фильма' :
+      'Ничего не найдено';
+
+    const redirect = savedCardList.length === 0 ?
+      '/movies' : undefined;
+
+    const redirectTitle = 'Полюбить фильмы можно тут'
+
+    return { title, redirect, redirectTitle }
+  }, [savedCardList]);
 
   return (
     <main className='saved-movies'>
-      <SearchForm />
-
-      <MoviesCardList
-        cardList={filteredList}
-        emptyMessageSettings={emptyMessageSettings}
-        onCardLikeClick={onMoviesCardLike}
-        theme='saved'
+      <SearchForm
+        onSubmit={handleSubmit}
+        useStorageWithDefaults={false}
+        onChange={handleFormChange}
       />
+
+      {isInFilteringProcess || !isSavedCardListReady ?
+        (<Preloader />) :
+        (
+          <MoviesCardList
+            cardList={filteredCardList}
+            emptyMessageSettings={emptyMessageSettings}
+            onCardLikeClick={handleSavedMovieCardLike}
+            theme='saved'
+            pagenation={false}
+            cardListFields={moviesFieldsSettings}
+          />
+        )
+      }
     </main>
   )
 }

@@ -1,17 +1,23 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 
+// Formik
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 
+// Utils
 import { AppContext } from '../../contexts/AppContext';
+import * as api from "../../utils/MainApi";
 
+// CSS
 import './Profile.css';
 
-export default function Profile() {
+export default function Profile({ onLogout, onChange }) {
   const { currentUser } = useContext(AppContext);
+  const [isSubmittingForm, setIsSubmittingForm] = useState(false);
 
   // formik form validation logics
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
       email: currentUser.email,
       name: currentUser.name,
@@ -25,13 +31,23 @@ export default function Profile() {
         .string()
         .min(2, 'Имя - минимум 2 символа')
         .max(30, 'Имя - максимум 30 символов')
-        .required('Имя – обязательное поле'),
+        .required('Имя – обязательное поле')
+        .matches(/^[a-zA-Zа-яА-Я\s/-/-/–]*$/, 'Только латиница, кириллица, пробел или дефис.'),
     }),
     onSubmit: (values) => {
-
-    }
+      setIsSubmittingForm(true);
+      api.patchUserMe(values.name, values.email)
+        .then(data => {
+          onChange(data, null);
+        })
+        .catch(errorMsg => {
+          onChange(null, errorMsg);
+        })
+        .finally(() => {
+          setIsSubmittingForm(false);
+        });
+    },
   });
-
 
   return (
     <main className='profile'>
@@ -58,6 +74,7 @@ export default function Profile() {
             value={formik.values.name}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            disabled={isSubmittingForm}
           />
         </div>
         <div className='profile__field-wrapper profile__field-wrapper_last'>
@@ -74,19 +91,22 @@ export default function Profile() {
             value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            disabled={isSubmittingForm}
             required />
         </div>
 
         <div className='profile__button-wrapper'>
           <button
             type='submit'
-            disabled={!formik.isValid}
+            disabled={!(formik.isValid && (formik.dirty && !isSubmittingForm))}
             className='profile__button profile__button_submit'>
-            Редактировать
+            {isSubmittingForm ? 'Сохраняем...' : 'Редактировать'}
           </button>
           <button
             type='button'
-            className='profile__button profile__button_accent'>
+            className='profile__button profile__button_accent'
+            onClick={onLogout}
+          >
             Выйти из аккаунта
           </button>
         </div>

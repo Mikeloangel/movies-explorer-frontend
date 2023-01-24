@@ -1,0 +1,128 @@
+.popup {
+  --back-color: rgba(0, 0, 0, 0.7);
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background-color: var(--back-color);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  visibility: hidden;
+  opacity: 0;
+
+  transition: visibility 200ms, opacity 200ms linear;
+
+  z-index: 11;
+}
+
+.popup_opened {
+  visibility: visible;
+  opacity: 1;
+}
+
+.popup__content {
+  --bg-color: #fff;
+
+  min-width: 430px;
+  padding: 34px 36px 37px 36px;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  background-color: var(--bg-color);
+  box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+
+  position: relative;
+}
+
+@media screen and (max-width: 555px) {
+  .popup__content {
+    min-width: max(180px, calc(100% - 38px));
+    padding: 25px 22px;
+    margin: 25px;
+  }
+}
+
+.popup__content_tooltip {
+  max-width: 430px;
+  min-height: 330px;
+}
+
+.popup__btn-close {
+  --transition: var(--hover-transition, "all 1s ease");
+
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translate(110%, -110%);
+
+  width: min-content;
+  height: min-content;
+  box-sizing: border-box;
+
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+
+  transition: var(--transition);
+}
+
+@media screen and (max-width: 555px) {
+  .popup__btn-close {
+    transform: translate(7%, -140%);
+  }
+}
+
+.popup__btn-close:hover {
+  opacity: 0.6;
+}
+
+.popup__btn-close-img {
+  padding: 0;
+  margin: 0;
+  width: 32px;
+  height: auto;
+  object-fit: contain;
+}
+
+@media screen and (max-width: 555px) {
+  .popup__btn-close-img {
+    width: 20px;
+  }
+}
+
+.popup__info-img {
+  display: block;
+  padding: 24px 0 0 0;
+  margin: 0 auto;
+  margin-bottom: 32px;
+
+  max-width: 120px;
+  height: auto;
+  object-fit: contain;
+}
+
+.popup__info-title {
+  --color: #000;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 1.2;
+
+  color: var(--color);
+}
+
+@media screen and (max-width: 555px) {
+  .popup__info-title {
+    font-size: 20px;
+  }
+}

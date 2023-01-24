@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-
 import './Auth.css';
 import imgLogo from '../../images/logo.png';
 
