@@ -201,13 +201,17 @@ function App() {
     showInfoToolTipPopup(msg, imgEnumTypes.fail);
   }
 
-  function handleFirstSearch(cb) {
+  function handleFirstSearch() {
+    if (isCardListReady) {
+      return;
+    }
+
     MoviesApi()
       .then(data => {
         setCardList(data);
         setIsCardListReady(true);
       })
-      .catch((errMsg) => {
+      .catch(() => {
         showInfoToolTipPopup(`Во время запроса произошла ошибка.Возможно, проблема с соединением или сервер недоступен.
         Подождите немного и попробуйте ещё раз`, imgEnumTypes.fail);
         setIsCardListReady(false);

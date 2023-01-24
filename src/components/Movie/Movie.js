@@ -30,7 +30,7 @@ export default function Movie({ onFirstLoad, onLikeClick }) {
       setSelectedCard(scard);
       setIsSelectedCardReady(true);
     } else {
-      setIsNotFound(false);
+      setIsNotFound(true);
     }
 
   }, [isCardListReady, onFirstLoad, cardList, movieId, savedCardList, isSavedCardListReady]);
@@ -73,10 +73,20 @@ export default function Movie({ onFirstLoad, onLikeClick }) {
                   </button>
                 </figcaption>
               </figure>
+
               <p className='card__duration'>{formattedDuration}
                 {selectedCard.country.toLowerCase() !== 'unknown' && (<span className='card__country'>Страна: {selectedCard.country}</span>)}
               </p>
+
               <p className='card__description'>{selectedCard.description}</p>
+              <a
+                href={selectedCard.trailerLink}
+                rel='noopener noreferrer'
+                target='_blank'
+                className="card__watch-link"
+              >
+                Смотреть
+              </a>
             </article>
           ) :
           (

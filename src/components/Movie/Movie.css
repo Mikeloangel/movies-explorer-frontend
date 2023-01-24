@@ -5,13 +5,12 @@
   box-sizing: border-box;
 }
 
-.movie__notfound{
+.movie__notfound {
   margin: 0 auto;
   text-align: center;
 
   font-size: 32px;
   font-weight: 600;
-
 }
 
 .card_theme_single {
@@ -30,12 +29,12 @@
   border-radius: 10px;
 }
 
-.card_theme_single .card__title{
+.card_theme_single .card__title {
   font-size: 22px;
   min-height: auto;
 }
 
-.card_theme_single .card__titles-wrapper{
+.card_theme_single .card__titles-wrapper {
   flex-direction: column;
   gap: 5px;
 }
@@ -46,16 +45,33 @@
   font-size: 16px;
 }
 
-.card_theme_single .card__country{
+.card_theme_single .card__duration {
+  font-size: 14px;
+}
+
+.card_theme_single .card__country {
   padding-left: 15px;
   color: var(--cl-text-300);
 }
 
-.card_theme_single .card__duration{
-  font-size: 14px;
+.card_theme_single .card__watch-link {
+  display: block;
+  margin: 0 auto;
+  padding: 20px 0;
+  width: min-content;
+  font-size: 18px;
+  color: var(--cl-text-primary);
+  text-decoration: underline;
+
+  transition: var(--transition-hover);
 }
 
-.card_theme_single .card__description{
+.card_theme_single .card__watch-link:hover {
+  text-decoration: underline;
+  opacity: 0.7;
+}
+
+.card_theme_single .card__description {
   padding: 20px 0 0 0;
   margin: 0;
   box-sizing: border-box;
@@ -74,24 +90,33 @@
     width: 100%;
   }
 
-  .card_theme_single .card__img{
+  .card_theme_single .card__img {
     max-height: 30%;
   }
 
   .card_theme_single .card__title {
     font-size: 18px;
   }
-  .card_theme_single .card__title-small{
+  .card_theme_single .card__title-small {
     font-size: 14px;
   }
 
-  .card_theme_single .card__titles-wrapper{
+  .card_theme_single .card__titles-wrapper {
     width: 100%;
     max-width: 60vw;
   }
 
-  .card_theme_single .card__description{
+  .card_theme_single .card__description {
     font-size: 16px;
   }
+}
 
+@media screen and (max-width: 555px) {
+  .card_theme_single .card__watch-link {
+    margin-top: 25px;
+    width: 100%;
+    text-align: center;
+    border-radius: 3px;
+    background-color: var(--bg-primary-300);
+  }
 }
