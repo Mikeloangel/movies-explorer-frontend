@@ -17,13 +17,23 @@ const enumFields = Object.freeze({
 
 
 // 02. utility public functions
+
+/**
+ *
+ * @param {String} value key value
+ * @returns template string
+ */
+const _lsGetTemplateString = (value) => {
+  return `${LOCAL_STORAGE_PREFIX}-${value}`;
+}
+
 /**
  * Set pair name value to local storage
  * @param {String} key
  * @param {String} value
  */
 const _lsSetItem = (key, value) => {
-  localStorage.setItem(`${LOCAL_STORAGE_PREFIX}-${key}`, value);
+  localStorage.setItem(_lsGetTemplateString(key), value);
 }
 
 /**
@@ -32,7 +42,7 @@ const _lsSetItem = (key, value) => {
  * @returns Value from local storage by key
  */
 const _lsGetItem = (key) => {
-  return localStorage.getItem(`${LOCAL_STORAGE_PREFIX}-${key}`);
+  return localStorage.getItem(_lsGetTemplateString(key));
 }
 
 /**
@@ -40,7 +50,7 @@ const _lsGetItem = (key) => {
  * @param {String} key
  */
 const _lsRemoveItem = (key) => {
-  localStorage.removeItem(`${LOCAL_STORAGE_PREFIX}-${key}`);
+  localStorage.removeItem(_lsGetTemplateString(key));
 }
 
 // 03. export functions
