@@ -4,7 +4,8 @@ import './MoviesCard.css';
 
 export default function MoviesCard({
   id,
-  nameRU, trailerLink,
+  nameRU, nameEN,
+  trailerLink,
   imgUrl, imgName,
   imgThumbnailUrl, imgLargeUrl, imgMediumUrl, imgSmallUrl,
   like = false,
@@ -43,7 +44,10 @@ export default function MoviesCard({
           </picture>
         </a>
         <figcaption className='card__figcapture' title={nameRU}>
-          <h2 className='card__title'>{nameRU}</h2>
+          <div className='card__titles-wrapper'>
+            <h2 className='card__title'>{nameRU}</h2>
+            <h3 className='card__title-small' title={nameEN}>{nameEN}</h3>
+          </div>
           <button
             className={`card__like ${like && 'card__like_type_active'}`}
             onClick={handleLikeClick}

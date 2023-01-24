@@ -144,6 +144,7 @@ export default function MoviesCardList({ cardList, emptyMessageSettings, onCardL
                 id={card[cardListFields.id]}
                 like={card.like}
                 nameRU={card.nameRU}
+                nameEN={card.nameEN}
                 duration={card.duration}
                 trailerLink={card.trailerLink}
                 baseUrl={cardListFields.baseUrl}

@@ -59,6 +59,26 @@
   color: var(--cl-text-primary);
 }
 
+.card__titles-wrapper{
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.card__title-small {
+  padding: 0 0 5px 0;
+  margin: 0;
+  max-width: 30ch;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+
+  font-size: 10px;
+  color: var(--cl-text-200);
+  font-weight: 400;
+}
+
 .card__like {
   flex: 0 0 24px;
   aspect-ratio: 1/1;
